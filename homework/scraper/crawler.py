@@ -58,7 +58,7 @@ def save_csv(filename, rows):
     with open(filename, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow([
-            'title', 'runtime', 'genre(s)', 'director(s)', 'writer(s)',
+            'title', 'year', 'runtime', 'genre(s)', 'director(s)', 'writer(s)',
             'actor(s)', 'rating(s)', 'number of rating(s)'
         ])
 
@@ -138,12 +138,16 @@ def main():
 
         # Extract relevant information for each movie
         movie_dom = BeautifulSoup(movie_html, "lxml")
+
         rows.append(scrape_movie_page(movie_dom))
 
         # Save one of the IMDB's movie pages (for testing)
         if i == 83:
             html_file = os.path.join(BACKUP_DIR, 'movie-%03d.html' % i)
             make_backup(html_file, movie_html)
+
+        if i == 250:
+            break
 
     # Save a CSV file with the relevant information for the top 250 movies.
     print('Saving CSV ...')
@@ -159,13 +163,22 @@ def scrape_top_250(soup):
     Args:
         soup: parsed DOM element of the top 250 index page
     Returns:
-        A list of strings, where each string is the URL to a movie's page on
+        A list of strings, where each string is the URL to a movie's pag_ale on
         IMDB, note that these URLS must be absolute (i.e. include the http
         part, the domain part and the path part).
     """
     movie_urls = []
     # YOUR SCRAPING CODE GOES HERE, ALL YOU ARE LOOKING FOR ARE THE ABSOLUTE
     # URLS TO EACH MOVIE'S IMDB PAGE, ADD THOSE TO THE LIST movie_urls.
+
+    contents = soup.find_all(class_="lister-list")
+
+    contents = contents[0].find_all(class_="titleColumn")
+
+    for series in contents:
+
+        elements = str(series.find("a")).split(";")
+        movie_urls.append("http://www.imdb.com/" + elements[0].strip('<a href="'))
 
     return movie_urls
 
@@ -187,20 +200,70 @@ def scrape_movie_page(dom):
     # Return everything of interest for this movie (all strings as specified
     # in the docstring of this function).
 
-    contents = dom.find_all(class_="lister-item-content")
-    # Title, rating, genre, actors, runtime
+    # title year duration genre directors writers actors rating ratings_count
+    output_array = []
 
-    tvseries = []
+    # info found in title wrapper
+    info = dom.find("div",class_="title_wrapper")
+    # print(info.find(itemprop="name").contents[0])
+    output_array.append(info.find(itemprop="name").contents[0].strip("\xa0"))
 
-    for series in contents:
-        series_data = []
+    # print(info.find(id="titleYear").find("a").string)
+    output_array.append(info.find(id="titleYear").find("a").string)
 
-        print("Title:", series.find("a").string)
-        series_data.append(series.find("a").string)
+    # print(info.find(itemprop="duration").string.strip())
+    output_array.append(info.find(itemprop="duration").string.strip())
+
+    genres_html = info.find_all(itemprop="genre")
+    genres = ""
+    for genre in genres_html:
+        genres = genres + genre.string + "; "
+    genres = genres.strip("; ")
+    # print(genres)
+    output_array.append(genres)
 
 
 
-    return
+
+    # people related appendage
+    people_things = dom.find("div", class_="plot_summary_wrapper")
+
+    directors = people_things.find(itemprop="director").find_all(itemprop="name")
+    peoples = ""
+    for people in directors:
+        peoples = peoples + people.string + "; "
+    peoples = peoples.strip("; ")
+    # print(peoples)
+    output_array.append(peoples)
+
+    writers = people_things.find(itemprop="creator").find_all(itemprop="name")
+    peoples = ""
+    for people in writers:
+        peoples = peoples + people.string + "; "
+    peoples = peoples.strip("; ")
+    # print(peoples)
+    output_array.append(peoples)
+
+    actresses = people_things.find_all(itemprop="actors")
+    peoples = ""
+    for people in actresses:
+        peoples = peoples + people.find(itemprop="name").string + "; "
+    peoples = peoples.strip("; ")
+    # print(peoples)
+    output_array.append(peoples)
+
+
+    # Ratings appendage
+    ratings = dom.find("div",class_="ratings_wrapper")
+    # print(ratings.find(itemprop="ratingValue").string)
+    output_array.append(ratings.find(itemprop="ratingValue").string)
+
+    # print(ratings.find(itemprop="ratingCount").string)
+    output_array.append(ratings.find(itemprop="ratingCount").string)
+    # print(output_array)
+
+
+    return output_array
 
 
 if __name__ == '__main__':
