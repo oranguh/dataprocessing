@@ -39,7 +39,7 @@ def extract_tvseries(dom):
         series_data.append(series.find("a").string)
 
         # print("Rating:", series.find("span", class_="value").string)
-        series_data.append(series.find("span", class_="value").string)
+        series_data.append(float(series.find("span", class_="value").string))
 
         # print("Genre:", series.find("span", class_="genre").string.strip('\n'))
         series_data.append(series.find("span", class_="genre").string.strip())
@@ -52,10 +52,10 @@ def extract_tvseries(dom):
 
         series_data.append(actors.strip(", "))
         if series.find("span", class_="runtime") == None:
-            series_data.append("UNK min")
+            series_data.append(None)
         # print("Runtime:", series.find("span", class_="runtime").string)
         else:
-            series_data.append(series.find("span", class_="runtime").string)
+            series_data.append(int(series.find("span", class_="runtime").string.strip("min")))
 
         tvseries.append(series_data)
         # print(series_data)

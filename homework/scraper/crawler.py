@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Name: Marco Heuvelman	
+# Name: Marco Heuvelman
 # Student number: 6434592
 """
 This script crawls the IMDB top 250 movies.
@@ -186,7 +186,21 @@ def scrape_movie_page(dom):
     # YOUR SCRAPING CODE GOES HERE:
     # Return everything of interest for this movie (all strings as specified
     # in the docstring of this function).
-    return 
+
+    contents = dom.find_all(class_="lister-item-content")
+    # Title, rating, genre, actors, runtime
+
+    tvseries = []
+
+    for series in contents:
+        series_data = []
+
+        print("Title:", series.find("a").string)
+        series_data.append(series.find("a").string)
+
+
+
+    return
 
 
 if __name__ == '__main__':
@@ -194,4 +208,3 @@ if __name__ == '__main__':
 
     # If you want to test the functions you wrote, you can do that here:
     # ...
-
