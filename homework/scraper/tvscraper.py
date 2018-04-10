@@ -26,48 +26,43 @@ def extract_tvseries(dom):
     - Actors/actresses (comma separated if more than one)
     - Runtime (only a number!)
     """
+
+    # content class which is loop-able
     contents = dom.find_all(class_="lister-item-content")
     # Title, rating, genre, actors, runtime
 
+    # empty array for all data
     tvseries = []
-
     for series in contents:
-
+        # empty array for each series
         series_data = []
 
-        # print("Title:", series.find("a").string)
+        # Title movie
         series_data.append(series.find("a").string)
-
-        # print("Rating:", series.find("span", class_="value").string)
+        # Rating
         series_data.append(float(series.find("span", class_="value").string))
-
-        # print("Genre:", series.find("span", class_="genre").string.strip('\n'))
+        # Genres
         series_data.append(series.find("span", class_="genre").string.strip())
-        # print("ACTORS:", end=" ")
 
+
+        # make a single string element for actors element
         actors = ""
         for stars in series.select('a[href^="/name/"]'):
-            # print(stars.string, end=", ")
+            # add commas, this can also be changed later
             actors = actors + stars.string + ", "
-
+        # remove trailing comma
         series_data.append(actors.strip(", "))
+
+        # runtime checker, set to None if None
         if series.find("span", class_="runtime") == None:
             series_data.append(None)
-        # print("Runtime:", series.find("span", class_="runtime").string)
         else:
             series_data.append(int(series.find("span", class_="runtime").string.strip("min")))
 
+        # append series data to the big dataset
         tvseries.append(series_data)
-        # print(series_data)
 
-
-
-    # ADD YOUR CODE HERE TO EXTRACT THE ABOVE INFORMATION ABOUT THE
-    # HIGHEST RATED TV-SERIES
-    # NOTE: FOR THIS EXERCISE YOU ARE ALLOWED (BUT NOT REQUIRED) TO IGNORE
-    # UNICODE CHARACTERS AND SIMPLY LEAVE THEM OUT OF THE OUTPUT.
-
-    return [tvseries]   # REPLACE THIS LINE AS WELL AS APPROPRIATE
+    return [tvseries]
 
 
 def save_csv(outfile, tvseries):
@@ -77,11 +72,12 @@ def save_csv(outfile, tvseries):
     writer = csv.writer(outfile)
     writer.writerow(['Title', 'Rating', 'Genre', 'Actors', 'Runtime'])
 
+    # write elements into csv
     for row in tvseries:
         for item in row:
             writer.writerow(item)
 
-    # ADD SOME CODE OF YOURSELF HERE TO WRITE THE TV-SERIES TO DISK
+
 
 
 def simple_get(url):

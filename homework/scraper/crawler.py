@@ -168,15 +168,13 @@ def scrape_top_250(soup):
         part, the domain part and the path part).
     """
     movie_urls = []
-    # YOUR SCRAPING CODE GOES HERE, ALL YOU ARE LOOKING FOR ARE THE ABSOLUTE
-    # URLS TO EACH MOVIE'S IMDB PAGE, ADD THOSE TO THE LIST movie_urls.
 
+    # creates array of all movies
     contents = soup.find_all(class_="lister-list")
-
     contents = contents[0].find_all(class_="titleColumn")
 
+    # loops through urls
     for series in contents:
-
         elements = str(series.find("a")).split(";")
         movie_urls.append("http://www.imdb.com/" + elements[0].strip('<a href="'))
 
@@ -196,72 +194,57 @@ def scrape_movie_page(dom):
         several), actor(s) (semicolon separated if several), rating, number
         of ratings.
     """
-    # YOUR SCRAPING CODE GOES HERE:
-    # Return everything of interest for this movie (all strings as specified
-    # in the docstring of this function).
 
     # title year duration genre directors writers actors rating ratings_count
     output_array = []
 
-    # info found in title wrapper
+    # title, year, duration, and genre found in "title_wrapper"
     info = dom.find("div",class_="title_wrapper")
-    # print(info.find(itemprop="name").contents[0])
+    # Title, strip the weird trailing symbol
     output_array.append(info.find(itemprop="name").contents[0].strip("\xa0"))
-
-    # print(info.find(id="titleYear").find("a").string)
+    # Year
     output_array.append(info.find(id="titleYear").find("a").string)
-
-    # print(info.find(itemprop="duration").string.strip())
+    # Duration
     output_array.append(info.find(itemprop="duration").string.strip())
-
+    # genre string element with ;
     genres_html = info.find_all(itemprop="genre")
     genres = ""
     for genre in genres_html:
         genres = genres + genre.string + "; "
     genres = genres.strip("; ")
-    # print(genres)
     output_array.append(genres)
 
-
-
-
-    # people related appendage
+    # directors, writers, actresses found in "plot_summary_wrapper"
     people_things = dom.find("div", class_="plot_summary_wrapper")
 
+    # directors
     directors = people_things.find(itemprop="director").find_all(itemprop="name")
     peoples = ""
     for people in directors:
         peoples = peoples + people.string + "; "
     peoples = peoples.strip("; ")
-    # print(peoples)
     output_array.append(peoples)
-
+    # writers
     writers = people_things.find(itemprop="creator").find_all(itemprop="name")
     peoples = ""
     for people in writers:
         peoples = peoples + people.string + "; "
     peoples = peoples.strip("; ")
-    # print(peoples)
     output_array.append(peoples)
-
+    # actresses
     actresses = people_things.find_all(itemprop="actors")
     peoples = ""
     for people in actresses:
         peoples = peoples + people.find(itemprop="name").string + "; "
     peoples = peoples.strip("; ")
-    # print(peoples)
     output_array.append(peoples)
 
-
-    # Ratings appendage
+    # Ratings found in "ratings_wrapper"
     ratings = dom.find("div",class_="ratings_wrapper")
-    # print(ratings.find(itemprop="ratingValue").string)
+    # rating
     output_array.append(ratings.find(itemprop="ratingValue").string)
-
-    # print(ratings.find(itemprop="ratingCount").string)
+    # rating count
     output_array.append(ratings.find(itemprop="ratingCount").string)
-    # print(output_array)
-
 
     return output_array
 
