@@ -1,43 +1,42 @@
 var canvas = document.getElementById('lineplot'); // in your HTML this element appears as <canvas id="myCanvas"></canvas>
 var ctx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = window.innerWidth - 50;
+canvas.height = window.innerHeight - 50;
+readTextFile('rawdata.txt');
 
-ctx.fillStyle = 'rgb(0,200,0)'; // sets the color to fill in the rectangle with
-ctx.fillRect(10, 10, 50, 50);   // draws the rectangle at position 10, 10 with a width of 55 and a height of 50
-
+// let texties = allText;
 
 let texties = document.getElementById("rawdata").innerHTML;
+
 let line = texties.split("\n");
 
 let temps = [];
 let dates = [];
 
+
+// console.log(allText);
+
 for (let i = 1; i < line.length-1; i++) {
     line[i] = line[i].split(",");
 
-    let date = line[i][0].trim()
-    // console.log(date)
-    let why_DOES_THIS_WORK = Date(date)
-    console.log(why_DOES_THIS_WORK)
-
-    dates[i-1] = new Date(why_DOES_THIS_WORK);
+    let dateString = line[i][0].trim()
+    // console.log(dateString.substring(0,4), dateString.substring(4,6),dateString.substring(6,8))
+    dates[i-1] = new Date(dateString.substring(0,4), dateString.substring(4,6),dateString.substring(6,8))
     temps[i-1] = Number(line[i][1]);
     // console.log(line[i][1])
 
 }
-temps.pop
+// console.log(temps, dates);
 
-console.log(temps, dates);
-console.log(typeof temps[254],typeof dates[0]);
-console.log(temps[254]);
+
 
 let dates_ms = [];
 for (let i = 0; i < dates.length; i++) {
     dates_ms[i] = dates[i].getTime();
 }
 
+// console.log(temps, dates_ms);
 
 let range_width = [0, canvas.width];
 let range_heigth = [0, canvas.height];
@@ -60,13 +59,24 @@ for (let i = 0; i < dates_ms.length; i++) {
 }
 
 
-// console.log(temp_transformed, dates_transformed)
+// console.log(temp_transformed[1].toFixed(0), dates_transformed[1].toFixed(0))
+
 ctx.beginPath();
 for (let i = 0; i < temps.length; i++) {
-    // ctx.lineTo(temp_transform[i], dates_transform[i])
 
+    let y = Math.floor(temp_transformed[i])
+    let x = Math.floor(dates_transformed[i])
+
+    // console.log(x,y)
+    ctx.lineTo(x, y)
 }
+// ctx.fill()
 ctx.stroke();
+
+
+
+
+
 
 function createTransform(domain, range){
 	// domain is a two-element array of the data bounds [domain_min, domain_max]
@@ -89,4 +99,23 @@ function createTransform(domain, range){
     return function(x){
       return alpha * x + beta;
     }
+}
+
+// https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file
+function readTextFile(file)
+{
+    let rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText;
+                // alert(allText);
+            }
+        }
+    }
+    rawFile.send(null);
 }
