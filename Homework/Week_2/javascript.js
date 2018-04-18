@@ -3,19 +3,18 @@ var ctx = canvas.getContext('2d');
 
 canvas.width = window.innerWidth - 50;
 canvas.height = window.innerHeight - 50;
-readTextFile('rawdata.txt');
 
-// let texties = allText;
+var line = document.getElementById("rawdata").innerHTML.split("\n");
 
-let texties = document.getElementById("rawdata").innerHTML;
+var thingy = new XMLHttpRequest();
 
-let line = texties.split("\n");
+// thingy.XMLHttpRequest.open(GET, "rawdata.txt");
 
-let temps = [];
-let dates = [];
+var temps = [];
+var dates = [];
 
 
-// console.log(allText);
+// console.log(line);
 
 for (let i = 1; i < line.length-1; i++) {
     line[i] = line[i].split(",");
@@ -31,52 +30,70 @@ for (let i = 1; i < line.length-1; i++) {
 
 
 
-let dates_ms = [];
+var dates_ms = [];
 for (let i = 0; i < dates.length; i++) {
     dates_ms[i] = dates[i].getTime();
 }
 
 // console.log(temps, dates_ms);
 
-let range_width = [0, canvas.width];
-let range_heigth = [0, canvas.height];
+var range_width = [0, canvas.width];
+var range_heigth = [canvas.height, 0];
 
-let domain_temps = [Math.min(...temps), Math.max(...temps)];
-let domain_dates = [Math.min(...dates_ms), Math.max(...dates_ms)];
-
-
-let temp_transform = createTransform(domain_temps, range_heigth);
-let dates_transform = createTransform(domain_dates, range_width);
+var domain_temps = [Math.min(...temps), Math.max(...temps)];
+var domain_dates = [Math.min(...dates_ms), Math.max(...dates_ms)];
 
 
-let temp_transformed = []
-let dates_transformed = []
+var temp_transform = createTransform(domain_temps, range_heigth);
+var dates_transform = createTransform(domain_dates, range_width);
 
-for (let i = 0; i < dates_ms.length; i++) {
 
-  dates_transformed[i] = dates_transform(dates_ms[i]);
-  temp_transformed[i] = temp_transform(temps[i]);
-}
+// var temp_transformed = []
+// var dates_transformed = []
+
+// for (let i = 0; i < dates_ms.length; i++) {
+//
+//
+// }
 
 
 // console.log(temp_transformed[1].toFixed(0), dates_transformed[1].toFixed(0))
+var gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+gradient.addColorStop("0.3", "red");
+gradient.addColorStop("0.6", "black");
+gradient.addColorStop("1.0", "blue");
 
 ctx.beginPath();
 for (let i = 0; i < temps.length; i++) {
+    let dates_transformed = dates_transform(dates_ms[i]);
+    let temp_transformed = temp_transform(temps[i]);
 
-    let y = Math.floor(temp_transformed[i])
-    let x = Math.floor(dates_transformed[i])
-
+    let y = Math.floor(temp_transformed)
+    let x = Math.floor(dates_transformed)
     // console.log(x,y)
     ctx.lineTo(x, y)
 }
-// ctx.fill()
+
+ctx.strokeStyle = gradient;
 ctx.stroke();
 
 
+var months_ms = numeric.linspace(domain_dates[0], domain_dates[1], 12).map(x => Math.floor(x));
+var months_int = months_ms.map(x => new Date(x).getMonth());
+// console.log(months_int)
 
+for (let i = 0; i < months_int.length; i++) {
+  ctx.fillText(months_int[i], dates_transform(months_ms[i]) + 15, canvas.height);
+}
 
+var tempuratura = numeric.linspace(domain_temps[0], domain_temps[1], 10).map(x => Math.floor(x));
+console.log(tempuratura)
+for (let i = 0; i < tempuratura.length; i++) {
+  ctx.fillText(Math.floor(tempuratura[i]*0.1), 2, temp_transform(tempuratura[i]) - 10);
+}
 
+ctx.font = "30px Arial";
+ctx.fillText("Temperatuur De Bilt (NL)", 800, 50)
 
 function createTransform(domain, range){
 	// domain is a two-element array of the data bounds [domain_min, domain_max]
@@ -104,7 +121,7 @@ function createTransform(domain, range){
 // https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file
 function readTextFile(file)
 {
-    let rawFile = new XMLHttpRequest();
+    var rawFile = new XMLHttpRequest();
     rawFile.open("GET", file, false);
     rawFile.onreadystatechange = function ()
     {
