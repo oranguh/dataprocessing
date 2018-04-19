@@ -99,8 +99,8 @@ function reqListener(){
     ctx.fillText(Math.floor(tempuratura[i]*0.1), 2, temp_transform(tempuratura[i]) - 10);
   }
 
-  ctx.font = "30px Arial";
-  ctx.fillText("Temperatuur De Bilt (NL) 2017 - 2018", 800, 50)
+  ctx.font = "20px Arial";
+  ctx.fillText("Temperatuur De Bilt (NL) 2017 - 2018", 700, 50)
 
 
   // var crosshair_canvas = document.getElementById('lineplot');
