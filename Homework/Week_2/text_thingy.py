@@ -1,6 +1,7 @@
 import csv
 
 
+# I adjusted the KNMI text to a nicer format.
 
 with open("rawdata.txt", 'w', newline='', encoding='utf-8') as output:
     writer = csv.writer(output)
