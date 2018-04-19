@@ -2,4 +2,4 @@
 
 https://oranguh.github.io/dataprocessing/
 
-[pages]https://raw.githubusercontent.com/oranguh/dataprocessing/master/Homework/Week_2/blah.html
+[pages]https://github.com/oranguh/dataprocessing/blob/master/Homework/Week_2/blah.html
