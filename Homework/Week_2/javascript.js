@@ -52,6 +52,9 @@ function reqListener(){
   var temp_transform = createTransform(domain_temps, range_heigth);
   var dates_transform = createTransform(domain_dates, range_width);
 
+  var temp_transform_BACK = createTransform(domain_temps, range_heigth, "backwards");
+  var dates_transform_BACK = createTransform(domain_dates, range_width, "backwards");
+
 
   // var temp_transformed = []
   // var dates_transformed = []
@@ -100,49 +103,85 @@ function reqListener(){
   }
 
   ctx.font = "20px Arial";
-  ctx.fillText("Temperatuur De Bilt (NL) 2017 - 2018", 700, 50)
+  ctx.fillText("Temperature: De Bilt (NL) 2017 - 2018", 700, 50)
 
 
-  // var crosshair_canvas = document.getElementById('lineplot');
-  // var ctx_crosshair = canvas.getContext('2d');
-  //
-  // crosshair_canvas.width = canvas.width;
-  // crosshair_canvas.height = canvas.innerHeight;
+  var crosshair_canvas = document.getElementById('crosshair');
+  var ctx_crosshair = crosshair_canvas.getContext('2d');
+
+  crosshair_canvas.width = canvas.width;
+  crosshair_canvas.height = canvas.height;
   //
   function getMousePos(canvas, evt) {
-    var rect = canvas.getBoundingClientRect();
+    var rect = crosshair_canvas.getBoundingClientRect();
     return {
       x: evt.clientX - rect.left,
       y: evt.clientY - rect.top
     };
   }
 
-  canvas.addEventListener('mousemove', function(evt) {
+  crosshair_canvas.addEventListener('mousemove', function(evt) {
     var mousePos = getMousePos(canvas, evt);
-    var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
-    console.log(canvas, message);
+    // console.log(mousePos);
+    let radius = 15
+    ctx_crosshair.clearRect(0, 0, crosshair_canvas.width, crosshair_canvas.height);
+    ctx_crosshair.beginPath();
+    ctx_crosshair.moveTo(0, mousePos.y);
+    ctx_crosshair.lineTo(mousePos.x - radius, mousePos.y);
+    ctx_crosshair.moveTo(mousePos.x, crosshair_canvas.height);
+    ctx_crosshair.lineTo(mousePos.x, mousePos.y + radius);
+    ctx_crosshair.moveTo(mousePos.x + radius, mousePos.y);
+    ctx_crosshair.arc(mousePos.x, mousePos.y, radius, 0, Math.PI * 2, true);
+    ctx_crosshair.stroke();
+
+    ctx_crosshair.font = "20px Arial";
+    let tempo = temp_transform_BACK(mousePos.y);
+    let dato = new Date(dates_transform_BACK(mousePos.x)).toString().substring(0,15);
+    tempo = String(Math.round(tempo * 0.1)) + " degrees celcius"
+    console.log(dato, tempo)
+    // new Date(x).toString());
+    ctx_crosshair.fillText(tempo, Math.floor(mousePos.x*0.5), mousePos.y);
+    ctx_crosshair.fillText(dato, mousePos.x, Math.floor(Math.abs(-crosshair_canvas.height - mousePos.y) * 0.5));
   }, false);
 
-  function createTransform(domain, range){
+
+
+
+  function createTransform(domain, range, condition){
   	// domain is a two-element array of the data bounds [domain_min, domain_max]
   	// range is a two-element array of the screen bounds [range_min, range_max]
   	// this gives you two equations to solve:
   	// range_min = alpha * domain_min + beta
   	// range_max = alpha * domain_max + beta
    		// a solution would be:
+      if (condition === "backwards"){
+        var domain_min = domain[0]
+        var domain_max = domain[1]
+        var range_min = range[0]
+        var range_max = range[1]
 
-      var domain_min = domain[0]
-      var domain_max = domain[1]
-      var range_min = range[0]
-      var range_max = range[1]
+        // formulas to calculate the alpha and the beta
+        var alpha = (domain_max - domain_min) / (range_max - range_min)
+        var beta = domain_max - alpha * range_max
 
-      // formulas to calculate the alpha and the beta
-     	var alpha = (range_max - range_min) / (domain_max - domain_min)
-      var beta = range_max - alpha * domain_max
+        // returns the function for the linear transformation (y= a * x + b)
+        return function(x){
+          return alpha * x + beta;
+        }
+      } else {
+        var domain_min = domain[0]
+        var domain_max = domain[1]
+        var range_min = range[0]
+        var range_max = range[1]
 
-      // returns the function for the linear transformation (y= a * x + b)
-      return function(x){
-        return alpha * x + beta;
+        // formulas to calculate the alpha and the beta
+       	var alpha = (range_max - range_min) / (domain_max - domain_min)
+        var beta = range_max - alpha * domain_max
+
+        // returns the function for the linear transformation (y= a * x + b)
+        return function(x){
+          return alpha * x + beta;
+        }
       }
   }
 
