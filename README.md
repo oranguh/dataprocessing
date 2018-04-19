@@ -1,6 +1,3 @@
 # dataprocessing
 
-https://oranguh.github.io/dataprocessing/
-
-
-[pages]https://oranguh.github.io/dataprocessing/Homework/Week_2/blah.html 
+[Click Me](https://oranguh.github.io/dataprocessing/index.html "Not a Virus")
