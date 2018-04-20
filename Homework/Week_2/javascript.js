@@ -6,7 +6,7 @@ function reqListener(){
   canvas.width = window.innerWidth - 50;
   canvas.height = window.innerHeight - 50;
 
-  var line = this.responseText.split("\n")
+  var line = this.responseText.split("\n");
 
   var temps = [];
   var dates = [];
@@ -156,8 +156,8 @@ function reqListener(){
   }
 }
 
-var requester = new XMLHttpRequest()
-var gitthingy = "https://oranguh.github.io/dataprocessing/Homework/Week_2/rawdata.txt"
+var requester = new XMLHttpRequest();
+var gitthingy = "https://oranguh.github.io/dataprocessing/Homework/Week_2/rawdata.txt";
 
 requester.addEventListener("load", reqListener);
 requester.open("GET", gitthingy)
