@@ -15,13 +15,13 @@ function reqListener(){
   for (let i = 1; i < line.length-1; i++) {
       line[i] = line[i].split(",");
       // make sure date_string is nice
-      let date_string = line[i][0].trim()
-      // ,onths are not in correct format for Date(), we make sure january is 0
-      let month = Number(date_string.substring(4,6)) - 1
-      dates[i-1] = new Date(date_string.substring(0,4), month, date_string.substring(6,8))
+      let date_string = line[i][0].trim();
+      // months are not in correct format for Date(), we make sure january is 0
+      let month = Number(date_string.substring(4,6)) - 1;
+      dates[i-1] = new Date(date_string.substring(0,4), month, date_string.substring(6,8));
       temps[i-1] = Number(line[i][1]);
   }
-  // set the dates to be in ms
+  // set the dates to be in ms from 1970 or something
   var dates_ms = [];
   for (let i = 0; i < dates.length; i++) {
       dates_ms[i] = dates[i].getTime();
@@ -46,9 +46,9 @@ function reqListener(){
   // making the graph
   ctx.beginPath();
   for (let i = 0; i < temps.length; i++) {
-      let y = Math.floor(temp_transform(temps[i]))
-      let x = Math.floor(dates_transform(dates_ms[i]))
-      ctx.lineTo(x, y)
+      let y = Math.floor(temp_transform(temps[i]));
+      let x = Math.floor(dates_transform(dates_ms[i]));
+      ctx.lineTo(x, y);
   }
   ctx.strokeStyle = gradient;
   ctx.stroke();
@@ -67,20 +67,20 @@ function reqListener(){
   var tempuratura = numeric.linspace(domain_temps[0], domain_temps[1], 10).map(x => Math.floor(x));
 
   for (let i = 0; i < tempuratura.length; i++) {
-    ctx.fillText(Math.floor(tempuratura[i]*0.1), 2, temp_transform(tempuratura[i]) - 10);
+    ctx.fillText(Math.floor(tempuratura[i]*0.1), 2, temp_transform(tempuratura[i]));
   }
 
   // random title
   ctx.font = "20px Arial";
-  ctx.fillText("Temperature: De Bilt (NL) 2017 - 2018", 700, 50)
+  ctx.fillText("Temperature: De Bilt (NL) 2017 - 2018", 700, 50);
 
-  // crosshairs and data tags
+  // crosshairs and data tag canvas
   var crosshair_canvas = document.getElementById('crosshair');
   var ctx_crosshair = crosshair_canvas.getContext('2d');
 
   crosshair_canvas.width = canvas.width;
   crosshair_canvas.height = canvas.height;
-  // functions inspired from internet
+  // get mousePos function inspired from internet
   function getMousePos(canvas, evt) {
     var rect = crosshair_canvas.getBoundingClientRect();
     return {
@@ -90,8 +90,8 @@ function reqListener(){
   }
 
   // backwards tranforms for crosshair labels
-  var temp_transform_BACK = createTransform(domain_temps, range_heigth, "backwards");
-  var dates_transform_BACK = createTransform(domain_dates, range_width, "backwards");
+  var temp_transform_back = createTransform(domain_temps, range_heigth, "backwards");
+  var dates_transform_back = createTransform(domain_dates, range_width, "backwards");
 
   // drawing the crosshair and the labels
   crosshair_canvas.addEventListener('mousemove', function(evt) {
@@ -108,12 +108,13 @@ function reqListener(){
     ctx_crosshair.arc(mousePos.x, mousePos.y, radius, 0, Math.PI * 2, true);
     ctx_crosshair.stroke();
 
+    // getting labels data using transform_Back
     ctx_crosshair.font = "20px Arial";
-    let tempo = temp_transform_BACK(mousePos.y);
-    let dato = new Date(dates_transform_BACK(mousePos.x)).toString().substring(0,15);
-    tempo = String(Math.round(tempo * 0.1)) + " degrees celcius"
-    console.log(dato, tempo)
-    // new Date(x).toString());
+    let tempo = temp_transform_back(mousePos.y);
+    let dato = new Date(dates_transform_back(mousePos.x)).toString().substring(0,15);
+    tempo = String(Math.round(tempo * 0.1)) + " degrees celcius";
+
+    // labels drawing
     ctx_crosshair.fillText(tempo, Math.floor(mousePos.x*0.5), mousePos.y);
     ctx_crosshair.fillText(dato, mousePos.x, Math.floor(Math.abs(-crosshair_canvas.height - mousePos.y) * 0.5));
   }, false);
@@ -125,28 +126,28 @@ function reqListener(){
 
       // made a backwards function so I could go backwards.
       if (condition === "backwards"){
-        var domain_min = domain[0]
-        var domain_max = domain[1]
-        var range_min = range[0]
-        var range_max = range[1]
+        var domain_min = domain[0];
+        var domain_max = domain[1];
+        var range_min = range[0];
+        var range_max = range[1];
 
         // formulas to calculate the alpha and the beta
-        var alpha = (domain_max - domain_min) / (range_max - range_min)
-        var beta = domain_max - alpha * range_max
+        var alpha = (domain_max - domain_min) / (range_max - range_min);
+        var beta = domain_max - alpha * range_max;
 
         // returns the function for the linear transformation (y= a * x + b)
         return function(x){
           return alpha * x + beta;
         }
       } else {
-        var domain_min = domain[0]
-        var domain_max = domain[1]
-        var range_min = range[0]
-        var range_max = range[1]
+        var domain_min = domain[0];
+        var domain_max = domain[1];
+        var range_min = range[0];
+        var range_max = range[1];
 
         // formulas to calculate the alpha and the beta
-       	var alpha = (range_max - range_min) / (domain_max - domain_min)
-        var beta = range_max - alpha * domain_max
+       	var alpha = (range_max - range_min) / (domain_max - domain_min);
+        var beta = range_max - alpha * domain_max;
 
         // returns the function for the linear transformation (y= a * x + b)
         return function(x){
@@ -156,9 +157,10 @@ function reqListener(){
   }
 }
 
+// confusing XMLHttpRequest
 var requester = new XMLHttpRequest();
 var gitthingy = "https://oranguh.github.io/dataprocessing/Homework/Week_2/rawdata.txt";
 
 requester.addEventListener("load", reqListener);
-requester.open("GET", gitthingy)
-requester.send()
+requester.open("GET", gitthingy);
+requester.send();
