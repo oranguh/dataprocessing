@@ -7,6 +7,25 @@ from datetime import date, datetime
 from time import strptime
 import matplotlib.pyplot as plt
 
+"""
+I downloaded the enron dataset, (5 000 000 e-mails, quite a few gigs of data)
+and decided to run a sentiment analysis or something to generate data.
+I descretized the dates to month so it would be nicer to plot the data
+in a bar chart. I also made my own fraudi-lyzer which detects fraud related words.
+
+csv in the format:
+
+date,date_sec,sentiment_score,fraud_score
+2000-09-01 00:00:00,967759200.0,1,0
+2000-08-01 00:00:00,965080800.0,-2,0
+2000-09-01 00:00:00,967759200.0,2,0
+2000-11-01 00:00:00,973033200.0,0,0
+2000-11-01 00:00:00,973033200.0,8,0
+2000-03-01 00:00:00,951865200.0,1,0
+
+etc.
+"""
+
 # absolute paths to lists
 positives = os.path.join(sys.path[0], "positive-words.txt")
 negatives = os.path.join(sys.path[0], "negative-words.txt")
@@ -51,8 +70,8 @@ for subdir, dirs, files in os.walk(mail_dir):
                         # mail_element['date'] = row[0].split(" ")[2:5]
                         mail_element['date'] = datetime(
                         int(row[0].split(" ")[4]),
-                        strptime(row[0].split(" ")[3], '%b').tm_mon,
-                        int(row[0].split(" ")[2]))
+                        strptime(row[0].split(" ")[3], '%b').tm_mon, 1)
+                        # int(row[0].split(" ")[2]))
                         mail_element['date_sec'] = mail_element['date'].timestamp()
 
                     if "X-FileName:" in row[0]:
@@ -94,3 +113,11 @@ plt.show()
 # for letter in sent_mail_dictionary:
 #     if letter['sentiment_score'] < -10:
 #         print(letter)
+
+
+with open("enron.csv", 'w', newline='', encoding='utf-8') as output:
+    writer = csv.writer(output)
+    writer.writerow(["date", "date_sec", "sentiment_score", "fraud_score"])
+
+    for item in sent_mail_dictionary:
+        writer.writerow([item["date"], item["date_sec"], item["sentiment_score"], item["fraud_score"]])

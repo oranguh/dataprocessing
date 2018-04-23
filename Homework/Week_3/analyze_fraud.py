@@ -15,7 +15,7 @@ class AnalyzerFraud():
          "loopholes", "ignore", "lawsuit", "debt", "sentence", "sentenced", "illegal",
          "destroying", "altering", "fabricating", "audit", "conflict of interest",
          "ethics", "ethical", "strange transactions", "concerns", "trial", "indictment",
-         "laundering", "justice", "crisis"])
+         "laundering", "justice", "crisis", "malpractice"])
 
         # file = open(positives, "r")
         # for line in file:
