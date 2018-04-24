@@ -22,7 +22,7 @@ for row in reader:
     pydicto.append(dict(row))
     # print(row)
 
-datadict = {"DATA": pydicto}
+# datadict = {"DATA": pydicto}
 # print(pydicto)
-json.dump(datadict, jsonfile)
+json.dump(pydicto, jsonfile)
 # print(pydicto)
