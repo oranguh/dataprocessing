@@ -45,8 +45,8 @@ for subdir, dirs, files in os.walk(mail_dir):
     #     continue
     if subdir.split("/")[-1] == "sent":
         for mail in files:
-            # if counter == 100:
-                # break
+            # if counter == 1000:
+            #     break
 
             mail_dir = subdir + "/" + mail
 
@@ -104,20 +104,43 @@ print(counter)
 # print(sent_mail_dictionary[0:5])
 
 xs = [dic['date_sec'] for dic in sent_mail_dictionary]
-# ys = [dic['sentiment_score'] for dic in sent_mail_dictionary]
-ys = [dic['fraud_score'] for dic in sent_mail_dictionary]
+# # ys = [dic['sentiment_score'] for dic in sent_mail_dictionary]
+# ys = [dic['fraud_score'] for dic in sent_mail_dictionary]
+#
+# plt.plot(xs, ys, 'ro')
+# plt.show()
 
-plt.plot(xs, ys, 'ro')
-plt.show()
+xs = sorted(set(xs))
+monthi_list = [{'month': datto} for datto in xs]
 
-# for letter in sent_mail_dictionary:
-#     if letter['sentiment_score'] < -10:
-#         print(letter)
+for dic_item in sent_mail_dictionary:
+    for dic_month in monthi_list:
+        if dic_month['month'] == dic_item['date_sec']:
+            try:
+                dic_month['count'] += 1
+            except KeyError:
+                dic_month['count'] = 1
 
+            if dic_item['fraud_score'] > 0:
+                try:
+                    dic_month['fraud_count'] += 1
+                except KeyError:
+                    dic_month['fraud_count'] = 1
+            else:
+                continue
+# print(monthi_list)
+for monthi in monthi_list:
+    try:
+        monthi['fraud_percent'] = (monthi['fraud_count']/monthi['count'])*100
+    except KeyError:
+        monthi['fraud_count'] = 0
+        monthi['fraud_percent'] = 0
+# print(monthi_list)
 
 with open("enron.csv", 'w', newline='', encoding='utf-8') as output:
     writer = csv.writer(output)
-    writer.writerow(["date", "date_sec", "sentiment_score", "fraud_score"])
+    writer.writerow(["month", "fraud_count", "fraud_percent"])
 
-    for item in sent_mail_dictionary:
-        writer.writerow([item["date"], item["date_sec"], item["sentiment_score"], item["fraud_score"]])
+    for item in monthi_list:
+        # writer.writerow([item["date"], item["date_sec"], item["sentiment_score"], item["fraud_score"]])
+        writer.writerow([item['month'], item['fraud_count'], item['fraud_percent']])

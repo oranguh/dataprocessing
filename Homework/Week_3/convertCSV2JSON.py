@@ -14,6 +14,15 @@ csvfile = open('enron.csv', 'r')
 jsonfile = open('enron.json', 'w')
 
 reader = csv.DictReader( csvfile)
+pydicto = []
 for row in reader:
-    json.dump(row, jsonfile)
-    jsonfile.write('\n')
+
+    # json.dump(row, jsonfile)
+    # jsonfile.write('\n')
+    pydicto.append(dict(row))
+    # print(row)
+
+datadict = {"DATA": pydicto}
+# print(pydicto)
+json.dump(datadict, jsonfile)
+# print(pydicto)
