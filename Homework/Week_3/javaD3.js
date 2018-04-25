@@ -93,7 +93,24 @@ function reqListener(){
    });
 
   //  I used this helpful link to make this http://jsfiddle.net/nhHww/1/
-
+  svg.append("text")
+    .attr("class", "texturl")
+    .attr("x", "20")
+    .attr("y", "20")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "20px")
+    .attr("fill", "blue")
+    .text("Enron Email Dataset")
+    .on("click", function() { window.open("https://www.cs.cmu.edu/~enron/");
+    });
+    svg.append("text")
+      .attr("x", "20")
+      .attr("y", "50")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "15px")
+      .attr("fill", "green")
+      .text("Marco Heuvelman 10176306")
+}
 
 var requester = new XMLHttpRequest();
 // var gitthingy = "https://oranguh.github.io/dataprocessing/Homework/Week_3/enron.json";
