@@ -21,7 +21,9 @@ for row in reader:
     # jsonfile.write('\n')
     pydicto.append(dict(row))
     # print(row)
-
+# first month an last 2 months are 0 values so removed.
+pydicto = pydicto[1:-2]
+# for some reason this is the correct format
 pydicto = {"DATA": pydicto}
 
 json.dump(pydicto, jsonfile)
