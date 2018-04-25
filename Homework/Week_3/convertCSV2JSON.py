@@ -6,7 +6,7 @@ convert csv file that I created into a json object. But I could have
 just as well made a json object to begin with but then this assignment would
 be obsolete.
 It's funny because I created a list of dictionary objects in enron_parse.py
-which looks exactly like the JSON file I generate.
+which looks very similar to the JSON file I generate.
 """
 
 
@@ -21,7 +21,7 @@ for row in reader:
     # jsonfile.write('\n')
     pydicto.append(dict(row))
     # print(row)
-# first month an last 2 months are 0 values so removed.
+# first month and last 2 months are 0 values so removed.
 pydicto = pydicto[1:-2]
 # for some reason this is the correct format
 pydicto = {"DATA": pydicto}
