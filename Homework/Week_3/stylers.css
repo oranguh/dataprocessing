@@ -7,10 +7,15 @@
   fill: brown;
 }
 
-.texto_months {
+.texto {
+  font-family: sans-serif;
+  font-size: 15px;
+  fill: black;
+}
+.dato {
   font-family: sans-serif;
   font-size: 10px;
-  fill: green;
+  fill: grey;
 }
 
 .texturl:hover {
