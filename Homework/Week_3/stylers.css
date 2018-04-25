@@ -1,0 +1,14 @@
+
+.bar {
+  fill: green;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.texto {
+  font-family: sans-serif;
+  font-size: 10px;
+  fill: green;
+}
