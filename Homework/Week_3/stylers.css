@@ -12,3 +12,7 @@
   font-size: 10px;
   fill: green;
 }
+
+.texturl:hover {
+    cursor: pointer;
+}

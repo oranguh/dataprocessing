@@ -1,22 +1,22 @@
 function reqListener(){
 
   var jsondata = JSON.parse(this.responseText);
-  var json_values = []
-  var json_percentage = []
-  var json_months = []
+  var json_values = [];
+  var json_percentage = [];
+  var json_months = [];
 
   // console.log(typeof this.responseText)
   // console.log(typeof jsondata)
 
 
   for (i in jsondata.DATA) {
-    json_values[i] = Number(jsondata.DATA[i]["fraud_count"])
-    json_months[i] = new Date(jsondata.DATA[i]["month"]*1000).toString()
+    json_values[i] = Number(jsondata.DATA[i]["fraud_count"]);
+    json_months[i] = new Date(jsondata.DATA[i]["month"]*1000).toString();
   }
   // console.log(json_values)
-  var w = window.innerWidth - 100
-  var h = window.innerHeight - 100
-  var margins = {"right": 5, "left":50, "bottom": 20, "top": 20}
+  var w = window.innerWidth - 100;
+  var h = window.innerHeight - 100;
+  var margins = {"right": 5, "left":50, "bottom": 20, "top": 20};
   var barPadding = 3;
 
 
@@ -57,7 +57,7 @@ function reqListener(){
     .attr("width", w / json_values.length - barPadding)
     .attr("height", function(d) {
     return d;  //Just the data value
-    })
+  });
     // .attr("fill", function(d) {
     // return "rgb(0, " + (d * 0.5) + ", 0)";
     // });
@@ -91,6 +91,25 @@ function reqListener(){
    .attr("y", function(d) {
         return h - 5;
    });
+
+  //  I used this helpful link to make this http://jsfiddle.net/nhHww/1/
+  svg.append("text")
+    .attr("class", "texturl")
+    .attr("x", "20")
+    .attr("y", "20")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "20px")
+    .attr("fill", "blue")
+    .text("Enron Email Dataset")
+    .on("click", function() { window.open("https://www.cs.cmu.edu/~enron/");
+    });
+    svg.append("text")
+      .attr("x", "20")
+      .attr("y", "50")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "15px")
+      .attr("fill", "green")
+      .text("Marco Heuvelman 10176306")
 }
 
 var requester = new XMLHttpRequest();
