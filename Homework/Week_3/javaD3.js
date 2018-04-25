@@ -1,17 +1,13 @@
 function reqListener(){
 
   var jsondata = JSON.parse(this.responseText);
-  var json_values = []
-  var json_percentage = []
-  var json_months = []
 
   // console.log(typeof this.responseText)
   // console.log(typeof jsondata)
 
 
   for (i in jsondata.DATA) {
-    json_values[i] = Number(jsondata.DATA[i]["fraud_count"])
-    json_months[i] = new Date(jsondata.DATA[i]["month"]*1000).toString()
+    jsondata.DATA[i]["month"] = new Date(jsondata.DATA[i]["month"]*1000).toString()
   }
   // console.log(json_values)
   var w = window.innerWidth - 100
@@ -44,19 +40,19 @@ function reqListener(){
   //     .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
 
   svg.selectAll("rect")
-    .data(json_values)
+    .data(jsondata.DATA)
     .enter()
     .append("rect")
     .attr("class", "bar")
     .attr("x", function(d, i) {
-    return i * (w / json_values.length) + margins.left;
+    return i * (w / jsondata.DATA.length) + margins.left;
     })
     .attr("y", function(d) {
-    return (h - margins.bottom) - d;  //Height minus data value
+    return (h - margins.bottom) - d.fraud_count;  //Height minus data value
     })
-    .attr("width", w / json_values.length - barPadding)
+    .attr("width", w / jsondata.DATA.length - barPadding)
     .attr("height", function(d) {
-    return d;  //Just the data value
+    return d.fraud_count;  //Just the data value
     })
     // .attr("fill", function(d) {
     // return "rgb(0, " + (d * 0.5) + ", 0)";
@@ -78,19 +74,21 @@ function reqListener(){
   //     .text("Frequency");
 
   svg.selectAll("text")
-   .data(json_months)
+   .data(jsondata.DATA)
    .enter()
    .append("text")
-   .attr("class", "texto")
+   .attr("class", "texto_months")
    .text(function(d) {
-     return d.substring(3,7)
+     return d.month.substring(3,7)
    })
    .attr("x", function(d, i) {
-        return i * (w / json_values.length) + margins.left + 4;
+        return i * (w / jsondata.DATA.length) + margins.left + barPadding;
    })
    .attr("y", function(d) {
         return h - 5;
-   });
+   })
+   .attr("text-anchor", "start");
+  //  .attr("transform", "rotate(0)");
 }
 
 var requester = new XMLHttpRequest();
