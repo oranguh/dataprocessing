@@ -25,6 +25,12 @@ month,fraud_count,fraud_percent
 922917600.0,5,25.0
 
 etc.
+
+I modified the sentiment analysis we make during the programmeren 2 in order
+to detect words related to fraud.
+
+This took more time to make than I initially thought, but I am quite pleased with
+the results!
 """
 
 # absolute paths to lists
@@ -60,8 +66,10 @@ for subdir, dirs, files in os.walk(mail_dir):
                 for row in mail_content:
                     # some of these rows are empty or contain only one space
 
+                    # skip random newlines
                     if row == [] or row[0] == " ":
                         continue
+                    #  if message contains forwarding elements, stop.
                     if " -----Original Message-----" in row[0]:
                         break
                     # This is an ugly way to do this but whatever, messy data
@@ -75,6 +83,7 @@ for subdir, dirs, files in os.walk(mail_dir):
                         # int(row[0].split(" ")[2]))
                         mail_element['date_sec'] = mail_element['date'].timestamp()
 
+                    # the last part of the e-mail header
                     if "X-FileName:" in row[0]:
                         after_header = True
                         continue
@@ -83,7 +92,7 @@ for subdir, dirs, files in os.walk(mail_dir):
                         # print(row[0])
                         written_content += row[0]
                         mail_element['written_content'] = written_content
-
+                # sentiment analysis the content
                 try:
                     mail_element['sentiment_score'] = analyzer.analyze(mail_element['written_content'])
                     mail_element['fraud_score'] = analyzerF.analyze_fraud(mail_element['written_content'])
@@ -111,6 +120,7 @@ xs = [dic['date_sec'] for dic in sent_mail_dictionary]
 # plt.plot(xs, ys, 'ro')
 # plt.show()
 
+# make months to turn data into discrete intervals
 xs = sorted(set(xs))
 monthi_list = [{'month': datto} for datto in xs]
 
@@ -121,7 +131,7 @@ for dic_item in sent_mail_dictionary:
                 dic_month['count'] += 1
             except KeyError:
                 dic_month['count'] = 1
-
+                # add to count if fraud is present
             if dic_item['fraud_score'] > 0:
                 try:
                     dic_month['fraud_count'] += 1
@@ -138,6 +148,7 @@ for monthi in monthi_list:
         monthi['fraud_percent'] = 0
 # print(monthi_list)
 
+# write the csv
 with open("enron.csv", 'w', newline='', encoding='utf-8') as output:
     writer = csv.writer(output)
     writer.writerow(["month", "fraud_count", "fraud_percent"])
