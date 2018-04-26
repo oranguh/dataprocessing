@@ -153,7 +153,7 @@ function reqListener(){
     .attr("font-size", "15px")
     .attr("font-weight", "bold")
     .attr("fill", "darkgreen")
-    .text("Enron e-mails containing corporate-accountaning-fraud-lawsuit related words in time");
+    .text("Enron e-mails containing corporate-accounting-fraud-lawsuit related words in time");
     function type(d) {
       d.frequency = +d.frequency;
       return d;
