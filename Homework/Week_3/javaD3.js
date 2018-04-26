@@ -19,14 +19,14 @@ var maxfinder = []
     jsondata.DATA[i]["month"] = new Date(jsondata.DATA[i]["month"]*1000).toString();
     maxfinder[i] = jsondata.DATA[i].fraud_count
   }
-  var w = window.innerWidth - 100;
+  var w = window.innerWidth - 150;
   var h = window.innerHeight - 100;
-  var margins = {"right": 0, "left":40, "bottom": 50, "top": 45};
+  var margins = {"right": 20, "left":60, "bottom": 50, "top": 50};
   var barPadding = 3;
 
 
   var xs = d3.scale.ordinal()
-      .rangeRoundBands([margins.left, w]);
+      .rangeRoundBands([margins.left, (w - margins.right)]);
 
   var ys = d3.scale.linear()
       .domain([Math.max(...maxfinder), 0])
@@ -60,7 +60,7 @@ var maxfinder = []
     .append("rect")
     .attr("class", "bar")
     .attr("x", function(d, i) {
-    return Math.floor(i * (w / jsondata.DATA.length) + margins.left)
+    return Math.floor(i * ((w - (margins.right + margins.left)) / jsondata.DATA.length) + margins.left)
     })
     .attr("y", function(d) {
     return (h - (h -ys(d.fraud_count)));  //Height minus data value
@@ -82,7 +82,7 @@ var maxfinder = []
      return d.month.substring(3,7)
    })
    .attr("x", function(d, i) {
-        return Math.floor(i * (w / jsondata.DATA.length) + margins.left) ;
+        return Math.floor(i * ((w - (margins.right + margins.left)) / jsondata.DATA.length) + margins.left) ;
    })
    .attr("y", function(d) {
         return h - margins.bottom * 0.6;
@@ -97,7 +97,7 @@ var maxfinder = []
       return d.month.substring(10,15)
     })
     .attr("x", function(d, i) {
-         return Math.floor(i * (w / jsondata.DATA.length) + margins.left) ;
+         return Math.floor(i * ((w - (margins.right + margins.left)) / jsondata.DATA.length) + margins.left) ;
     })
     .attr("y", function(d) {
          return h - margins.bottom * 0.4 ;
@@ -112,8 +112,8 @@ var maxfinder = []
 
   // y - axis labels https://bl.ocks.org/d3noob/23e42c8f67210ac6c678db2cd07a747e
   svg.append("text")
-      .attr("y", 0 + (margins.left / 8))
-      .attr("x",0 - (h / 2) + 37)
+      .attr("y", 0)
+      .attr("x",0 - (h / 2))
       .attr("transform", "rotate(-90)")
       .attr("dy", "1em")
       .attr("fill", "red")
@@ -124,7 +124,7 @@ var maxfinder = []
       .attr("fill", "red")
       .attr("transform",
             "translate(" + (w/2) + " ," +
-                           (h + margins.top ) + ")")
+                           (h) + ")")
       .style("text-anchor", "middle")
       .text("Date");
 
@@ -145,7 +145,7 @@ var maxfinder = []
     .attr("font-family", "sans-serif")
     .attr("font-size", "15px")
     .attr("fill", "green")
-    .text("Marco Heuvelman 10176306")
+    .text("Marco Heuvelman 10176306");
 
     function type(d) {
       d.frequency = +d.frequency;
