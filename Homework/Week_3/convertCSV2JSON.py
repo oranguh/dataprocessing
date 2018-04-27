@@ -23,7 +23,7 @@ for row in reader:
     # print(row)
 # first month and last 2 months are 0 values so removed.
 pydicto = pydicto[1:-2]
-# for some reason this is the correct format
+# make into actual json format
 pydicto = {"DATA": pydicto}
 
 json.dump(pydicto, jsonfile)
