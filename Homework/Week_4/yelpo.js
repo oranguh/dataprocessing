@@ -8,16 +8,27 @@
 
 var w = window.innerWidth - 150;
 var h = window.innerHeight - 50;
-var margins = {"right": 20, "left":60, "bottom": 50, "top": 50};
-var barPadding = 3;
+var margins = {"right": 50, "left":60, "bottom": 50, "top": 50};
 var numPokemans = 5;
+
+
 
 var API_HOST = 'https://pokeapi.co/api/v2/'
 var POKEDEX = 'https://pokeapi.co/api/v2/pokemon/'
 //  e.g. https://pokeapi.co/api/v2/pokemon/1/
-//
-//
-window.onload = function(){
+var POKEWIKI = 'http://pokemon.wikia.com/wiki/'
+
+
+function clickity(num) {
+numPokemans = num;
+
+initialize()
+
+}
+
+window.onload = initialize()
+
+function initialize(){
 
   var myPokemonList = []
   d3.queue()
@@ -25,33 +36,42 @@ window.onload = function(){
     .awaitAll(function(error, pokedex) {
       if (error) throw error;
 
-      pokemans = JSON.parse(pokedex[0]['response']).results
+      pokemans = JSON.parse(pokedex[0].response)
       // console.log(pokemans);
+      pokemanUpperLimit = pokemans.count;
 
-      let helloThere = d3.queue()
-      for (let i = 0; i < numPokemans; ++i) {
-        console.log(pokemans[i])
-        helloThere.defer(d3.request, pokemans[i].url)
+      let helloThere = d3.queue();
+      for (let i = 1; i <= numPokemans; ++i) {
+        // console.log(pokemans[i])
+        let randomi = Math.floor(Math.random() * (pokemanUpperLimit/4)) + 1
+        // console.log(randomi)
+        helloThere.defer(d3.request, POKEDEX + randomi)
+        // if (i === 5) { break; }
       }
         helloThere.awaitAll(pokeFun);
     });
 
+
   function pokeFun(error, pokemonStats) {
     if (error) throw error;
     // console.log(pokemonStats);
-
+    console.log([...Array(40)].map(_=>Math.ceil(Math.random()*40)))
     for (let i = 0; i < pokemonStats.length; i++){
-      plokemon = JSON.parse(pokemonStats[i]['response'])
+      plokemon = JSON.parse(pokemonStats[i].response)
       console.log(plokemon);
 
       myPokemonList.push(plokemon)
-      console.log(myPokemonList[i].weight)
-      console.log(myPokemonList[i].stats[0].base_stat)
+      // console.log(myPokemonList[i].weight)
+      // console.log(myPokemonList[i].stats[0].base_stat)
       for (let k = 0; k < myPokemonList[i].types.length; k++){
-        console.log(myPokemonList[i].types[k].type.name)
+        // console.log(myPokemonList[i].types[k].type.name)
 
       }
     }
+
+  // Clears the screen
+  d3.select("body").select(".tooltip").remove();
+  d3.select("body").select("svg").remove();
   // AXES and transforms!
   var xs = d3.scaleLinear()
       .domain([0, d3.max(myPokemonList, function(d){
@@ -65,7 +85,9 @@ window.onload = function(){
         }), 0])
       .range([margins.top, (h - margins.bottom)]);
 
-
+  var div = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
 
   // DO SVG SCATTERPLOT HERE
@@ -75,15 +97,10 @@ window.onload = function(){
     .attr("height", h)
   // make them axes
 
-  // var axisX = svg.select("#x_axis")
-  //     .transition().duration(200)//.ease(“sin-in-out”)
-  //     .attr("transform", "translate(0," + h + ")")
-  //     .call(d3.axisBottom(xs))
-
   var xAxis = d3.axisBottom(xs);
   var yAxis = d3.axisLeft(ys);
 
-
+// https://stackoverflow.com/questions/15747987/nested-circles-in-d3
   svg.selectAll("circle")
    .data(myPokemonList)
    .enter()
@@ -92,19 +109,46 @@ window.onload = function(){
          return Math.floor(xs(d.weight));
     })
     .attr("cy", function(d) {
-         return Math.floor((h - (h - ys(d.stats[0].base_stat))));
+         return Math.floor(ys(d.stats[0].base_stat));
     })
     .attr("r", function(d) {
-         return d.height;
+         return d.height*1.5;
     })
+    .style("stroke-width", 1)
+    .style("stroke", "black")
     .attr("class", function(d) {
-      let pokeclasses = ""
+      let pokeclasses = "scatter "
       for (let k = 0; k < d.types.length; k++){
         console.log(d.types[k].type.name)
         pokeclasses = pokeclasses + (d.types[k].type.name) + " "
       }
       return pokeclasses
-    });
+    })
+    .on("click", function(d) { window.open(POKEWIKI + d.name);
+    })
+    .on("mouseover", function(d) {
+      let tooltipinfo = d.name + "<br/>" + "weight: " + d.weight
+                               + "<br/>" + "speed: " + d.stats[0].base_stat
+                               + "<br/>" + "height: " + d.height
+                               + "<br/>" + "type(s): "
+      for (let k = 0; k < d.types.length; k++){
+        // console.log(d.types[k].type.name)
+        tooltipinfo = tooltipinfo + (d.types[k].type.name) + " "
+      }
+      div.transition()
+        .duration(200)
+        .style("opacity", .9);
+      div.html(tooltipinfo)
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+      })
+    .on("mouseout", function(d) {
+      div.transition()
+        .duration(500)
+        .style("opacity", 0);
+      })
+
+
 
   svg.append('g')
     .attr("transform", "translate(0," + (h - margins.bottom) + ")")
@@ -112,7 +156,22 @@ window.onload = function(){
   svg.append('g')
     .attr("transform", "translate(" + margins.left + ", 0)")
     .call(yAxis)
-
+  svg.append("text")
+      .attr("y", 0)
+      .attr("x",0 - (h / 2))
+      .attr("transform", "rotate(-90)")
+      .attr("dy", "1em")
+      .attr("fill", "red")
+      .style("text-anchor", "middle")
+      .text("Speed");
+    // x-axis
+  svg.append("text")
+    .attr("fill", "red")
+    .attr("transform",
+          "translate(" + (w/2) + " ," +
+                         (h - 7) + ")")
+    .style("text-anchor", "middle")
+    .text("Weight");
 
 
   };

@@ -5,50 +5,68 @@
   fill: green;
 }
 .bug {
-  fill: green;
+  fill: chartreuse;
 }
 .dark {
-  fill: green;
+  fill: indigo;
 }
 .dragon {
-  fill: green;
+  fill: coral;
 }
 .electric {
-  fill: green;
+  fill: yellow;
 }
 .fairy {
-  fill: green;
+  fill: pink;
 }
 .fighting {
-  fill: green;
+  fill: paleturquoise;
 }
 .flying {
-  fill: green;
+  fill: skyblue;
 }
 .ghost {
-  fill: green;
+  fill: black;
 }
 .grass {
-  fill: YellowGreen;
+  fill: yellowgreen;
 }
 .ground {
-  fill: green;
+  fill: sienna;
 }
 .ice {
-  fill: green;
+  fill: turquoise;
 }
 .normal {
-  fill: green;
+  fill: DarkGrey;
 }
 .psychic {
-  fill: green;
+  fill: purple;
 }
 .rock {
-  fill: green;
+  fill: brown;
 }
 .steel {
-  fill: green;
+  fill: silver;
 }
 .water {
-  fill: green;
+  fill: blue;
+}
+
+.scatter:hover {
+  fill: brown;
+  cursor: pointer;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 180px;
+  height: 80px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
 }
