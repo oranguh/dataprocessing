@@ -21,7 +21,8 @@ var POKEWIKI = 'http://pokemon.wikia.com/wiki/'
 
 function clickity(num) {
 numPokemans = num;
-
+w = window.innerWidth - 150;
+h = window.innerHeight - 50;
 initialize()
 
 }
@@ -31,25 +32,26 @@ window.onload = initialize()
 function initialize(){
 
   var myPokemonList = []
-  d3.queue()
-    .defer(d3.request, POKEDEX)
-    .awaitAll(function(error, pokedex) {
-      if (error) throw error;
+  // d3.queue()
+  //   .defer(d3.request, POKEDEX)
+  //   .awaitAll(function(error, pokedex) {
+  //     if (error) throw error;
 
-      pokemans = JSON.parse(pokedex[0].response)
+      // pokemans = JSON.parse(pokedex[0].response)
       // console.log(pokemans);
-      pokemanUpperLimit = pokemans.count;
+      // pokemanUpperLimit = pokemans.count;
+      pokemanUpperLimit = 949;
 
       let helloThere = d3.queue();
       for (let i = 1; i <= numPokemans; ++i) {
         // console.log(pokemans[i])
-        let randomi = Math.floor(Math.random() * (pokemanUpperLimit/4)) + 1
+        let randomi = Math.floor(Math.random() * (pokemanUpperLimit/8)) + 1
         // console.log(randomi)
         helloThere.defer(d3.request, POKEDEX + randomi)
         // if (i === 5) { break; }
       }
         helloThere.awaitAll(pokeFun);
-    });
+    // });
 
 
   function pokeFun(error, pokemonStats) {
@@ -112,7 +114,7 @@ function initialize(){
          return Math.floor(ys(d.stats[0].base_stat));
     })
     .attr("r", function(d) {
-         return d.height*1.5;
+         return d.height + 5;
     })
     .style("stroke-width", 1)
     .style("stroke", "black")
