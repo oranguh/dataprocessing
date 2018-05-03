@@ -28,7 +28,6 @@ numPokemans = num;
 w = window.innerWidth - 150;
 h = window.innerHeight - 50;
 initialize()
-
 }
 
 window.onload = initialize()
@@ -76,13 +75,9 @@ function initialize(){
     }
 
   // Clears the screen
-  d3.select("body").select(".tooltip")
-  .transition()
-  .duration(500)
+  d3.select("body").selectAll(".tooltip")
   .remove();
   d3.select("body").select("svg")
-  .transition()
-  .duration(500)
   .remove();
   // AXES and transforms!
   var xs = d3.scaleLinear()
@@ -135,7 +130,7 @@ function initialize(){
     .attr("class", function(d) {
       let pokeclasses = "scatter "
       for (let k = 0; k < d.types.length; k++){
-        console.log(d.types[k].type.name)
+        // console.log(d.types[k].type.name)
         pokeclasses = pokeclasses + (d.types[k].type.name) + " "
       }
       return pokeclasses
@@ -180,7 +175,11 @@ var legendo = svg.append("g")
      (i/poketypes.length) * (h - margins.top - margins.bottom) + margins.top);
     })
    .attr("width", 10)
-   .attr("height", 10);
+   .attr("height", 10)
+  //  .on("click", visilegend(function(d) {
+  //    return d
+  //   }))
+   ;
 
     legendo.selectAll("text")
      .data(poketypes)
@@ -256,5 +255,16 @@ var legendo = svg.append("g")
     .on("click", function() { window.open("https://pokeapi.co/");
     });
 
+    function visilegend(typo) {
+    d3.select("body").select("svg").selectAll("circle")
+      // .transition()
+      // .delay(750)
+      .style("visibility", "hidden");
+
+    d3.select("body").select("svg").selectAll("circle").selectAll(typo)
+      // .transition()
+      // .delay(750)
+      .style("visibility", "visible");
+    }
   };
 };
