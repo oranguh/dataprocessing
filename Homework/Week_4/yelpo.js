@@ -74,8 +74,14 @@ function initialize(){
     }
 
   // Clears the screen
-  d3.select("body").select(".tooltip").remove();
-  d3.select("body").select("svg").remove();
+  d3.select("body").select(".tooltip")
+  .transition()
+  .duration(500)
+  .remove();
+  d3.select("body").select("svg")
+  .transition()
+  .duration(500)
+  .remove();
   // AXES and transforms!
   var xs = d3.scaleLinear()
       .domain([d3.max(myPokemonList, function(d){
@@ -181,7 +187,7 @@ var legendo = svg.append("g")
      .attr("class", function(d) {
        return d + " legendtext legendurl"
       })
-     .attr("x", (w - margins.right) + margins.right*(3/8))
+     .attr("x", Math.floor((w - margins.right) + margins.right*(3/8)))
      .attr("y", function(d, i) {
        return Math.floor(
        (i/poketypes.length) * (h - margins.top - margins.bottom) + margins.top) + 9;
@@ -195,10 +201,16 @@ var legendo = svg.append("g")
       ;
       legendo.append("text")
         .attr("class", "legendtext")
-        .attr("x", (w - margins.right) + margins.right/4)
-        .attr("y", margins.top)
+        .attr("x", Math.floor((w - margins.right) + margins.right/4))
+        .attr("y", Math.floor(margins.top*(7/8)))
         // .style("text-anchor", "middle")
         .text("Size: height");
+      legendo.append("text")
+        .attr("class", "legendTitle")
+        .attr("x", Math.floor((w - margins.right) + margins.right/4))
+        .attr("y", Math.floor(margins.top*(2/8)))
+        // .style("text-anchor", "middle")
+        .text("PokeLegend");
 
   svg.append('g')
     .attr("transform", "translate(0," + (h - margins.bottom) + ")")
@@ -208,7 +220,7 @@ var legendo = svg.append("g")
     .call(yAxis)
   svg.append("text")
       .attr("y", 0)
-      .attr("x",0 - (h / 2))
+      .attr("x",0 - Math.floor((h / 2)))
       .attr("transform", "rotate(-90)")
       .attr("dy", "1em")
       .attr("fill", "red")
@@ -218,10 +230,26 @@ var legendo = svg.append("g")
   svg.append("text")
     .attr("fill", "red")
     .attr("transform",
-          "translate(" + (w/2) + " ," +
+          "translate(" + Math.floor((w/2)) + " ," +
                          (h - 7) + ")")
     .style("text-anchor", "middle")
     .text("Weight");
+
+  svg.append("text")
+    .attr("x", "50")
+    .attr("y", "40")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "15px")
+    .attr("fill", "green")
+    .text("Marco Heuvelman 10176306");
+  svg.append("text")
+    .attr("x", "100")
+    .attr("y", "20")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "15px")
+    .attr("font-weight", "bold")
+    .attr("fill", "darkgreen")
+    .text("Pokemons");
 
   };
 };

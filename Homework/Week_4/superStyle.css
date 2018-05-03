@@ -69,6 +69,10 @@
   fill: black;
   font: 8px sans-serif;
 }
+.legendTitle{
+  fill: black;
+  font: 12px sans-serif;
+}
 
 div.tooltip {
   position: absolute;
