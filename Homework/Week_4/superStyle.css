@@ -57,6 +57,18 @@
   fill: brown;
   cursor: pointer;
 }
+.legendblock:hover {
+  fill: brown;
+  cursor: pointer;
+}
+.legendurl:hover {
+  fill: brown;
+  cursor: pointer;
+}
+.legendtext {
+  fill: black;
+  font: 8px sans-serif;
+}
 
 div.tooltip {
   position: absolute;

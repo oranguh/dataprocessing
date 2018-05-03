@@ -8,9 +8,13 @@
 
 var w = window.innerWidth - 150;
 var h = window.innerHeight - 50;
-var margins = {"right": 50, "left":60, "bottom": 50, "top": 50};
-var numPokemans = 5;
+var margins = {"right": 100, "left":60, "bottom": 50, "top": 50};
 
+var numPokemans = 5;
+var poketypes =
+  ["fire", "poison", "bug", "dark", "dragon", "electric", "fairy", "fighting",
+  "flying", "ghost", "grass", "ground", "ice", "normal", "psychic", "rock", "steel",
+  "water"];
 
 
 var API_HOST = 'https://pokeapi.co/api/v2/'
@@ -74,15 +78,19 @@ function initialize(){
   d3.select("body").select("svg").remove();
   // AXES and transforms!
   var xs = d3.scaleLinear()
-      .domain([0, d3.max(myPokemonList, function(d){
+      .domain([d3.max(myPokemonList, function(d){
             return d.weight;
-        })])
+        }) * -(1/32), d3.max(myPokemonList, function(d){
+            return d.weight;
+        }) * (9/8)])
       .range([margins.left, (w - margins.right)]);
 
   var ys = d3.scaleLinear()
       .domain([d3.max(myPokemonList, function(d){
             return d.stats[0].base_stat;
-        }), 0])
+        }) * (9/8), d3.max(myPokemonList, function(d){
+              return d.stats[0].base_stat;
+          }) * -(1/32)])
       .range([margins.top, (h - margins.bottom)]);
 
   var div = d3.select("body").append("div")
@@ -148,7 +156,49 @@ function initialize(){
         .style("opacity", 0);
       })
 
+var legendo = svg.append("g")
+    .attr("class", "legend_box")
 
+  legendo.selectAll("rect")
+   .data(poketypes)
+   .enter()
+   .append("rect")
+   .attr("class", function(d) {
+     return d + " legendblock"
+    })
+   .attr("x", (w - margins.right) + margins.right/4)
+   .attr("y", function(d, i) {
+     return Math.floor(
+     (i/poketypes.length) * (h - margins.top - margins.bottom) + margins.top);
+    })
+   .attr("width", 10)
+   .attr("height", 10);
+
+    legendo.selectAll("text")
+     .data(poketypes)
+     .enter()
+     .append("text")
+     .attr("class", function(d) {
+       return d + " legendtext legendurl"
+      })
+     .attr("x", (w - margins.right) + margins.right*(3/8))
+     .attr("y", function(d, i) {
+       return Math.floor(
+       (i/poketypes.length) * (h - margins.top - margins.bottom) + margins.top) + 9;
+      })
+      .text(function(d){
+        return d
+      })
+      .on("click", function(d) { window.open(POKEWIKI + d + "_type");
+      })
+      // .style("text-anchor", "middle")
+      ;
+      legendo.append("text")
+        .attr("class", "legendtext")
+        .attr("x", (w - margins.right) + margins.right/4)
+        .attr("y", margins.top)
+        // .style("text-anchor", "middle")
+        .text("Size: height");
 
   svg.append('g')
     .attr("transform", "translate(0," + (h - margins.bottom) + ")")
@@ -172,7 +222,6 @@ function initialize(){
                          (h - 7) + ")")
     .style("text-anchor", "middle")
     .text("Weight");
-
 
   };
 };
