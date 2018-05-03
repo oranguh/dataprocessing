@@ -52,7 +52,9 @@
 .water {
   fill: blue;
 }
-
+.title:hover {
+  cursor: pointer;
+}
 .scatter:hover {
   fill: brown;
   cursor: pointer;

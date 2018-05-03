@@ -245,13 +245,16 @@ var legendo = svg.append("g")
     .attr("fill", "green")
     .text("Marco Heuvelman 10176306");
   svg.append("text")
+    .attr("class", "title")
     .attr("x", "100")
     .attr("y", "20")
     .attr("font-family", "sans-serif")
     .attr("font-size", "15px")
     .attr("font-weight", "bold")
     .attr("fill", "darkgreen")
-    .text("Pokemons");
+    .text("Random pokemons from pokemon API")
+    .on("click", function() { window.open("https://pokeapi.co/");
+    });
 
   };
 };
