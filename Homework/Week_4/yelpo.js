@@ -9,7 +9,7 @@
 var w = window.innerWidth - 150;
 var h = window.innerHeight - 50;
 var margins = {"right": 100, "left":60, "bottom": 50, "top": 50};
-
+var uninitialized = true;
 var numPokemans = 5;
 var poketypes =
   ["fire", "poison", "bug", "dark", "dragon", "electric", "fairy", "fighting",
@@ -17,16 +17,17 @@ var poketypes =
   "water"];
 
 
-var API_HOST = 'https://pokeapi.co/api/v2/'
-var POKEDEX = 'https://pokeapi.co/api/v2/pokemon/'
+var API_HOST = 'https://pokeapi.co/api/v2/';
+var POKEDEX = 'https://pokeapi.co/api/v2/pokemon/';
 //  e.g. https://pokeapi.co/api/v2/pokemon/1/
-var POKEWIKI = 'http://pokemon.wikia.com/wiki/'
+var POKEWIKI = 'http://pokemon.wikia.com/wiki/';
 
 
 function clickity(num) {
 numPokemans = num;
 w = window.innerWidth - 150;
 h = window.innerHeight - 50;
+uninitialized = false;
 initialize()
 }
 
@@ -60,10 +61,10 @@ function initialize(){
   function pokeFun(error, pokemonStats) {
     if (error) throw error;
     // console.log(pokemonStats);
-    console.log([...Array(40)].map(_=>Math.ceil(Math.random()*40)))
+    // console.log([...Array(40)].map(_=>Math.ceil(Math.random()*40)))
     for (let i = 0; i < pokemonStats.length; i++){
       plokemon = JSON.parse(pokemonStats[i].response)
-      console.log(plokemon);
+      // console.log(plokemon);
 
       myPokemonList.push(plokemon)
       // console.log(myPokemonList[i].weight)
@@ -77,8 +78,10 @@ function initialize(){
   // Clears the screen
   d3.select("body").selectAll(".tooltip")
   .remove();
-  d3.select("body").select("svg")
-  .remove();
+  d3.select("body").select("svg").selectAll("circle")
+    .transition()
+    .duration(700)
+    .attr("r", 0);
   // AXES and transforms!
   var xs = d3.scaleLinear()
       .domain([d3.max(myPokemonList, function(d){
@@ -95,23 +98,27 @@ function initialize(){
               return d.stats[0].base_stat;
           }) * -(1/32)])
       .range([margins.top, (h - margins.bottom)]);
-
   var div = d3.select("body").append("div")
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-
-  // DO SVG SCATTERPLOT HERE
-  var svg = d3.select("body")
-    .append("svg")
-    .attr("width", w)
-    .attr("height", h)
+  if (uninitialized) {
+    // DO SVG SCATTERPLOT HERE
+    var svg = d3.select("body")
+      .append("svg")
+      .attr("width", w)
+      .attr("height", h)
+  }
+  else {
+    var svg = d3.select("body").select("svg")
+  }
   // make them axes
 
   var xAxis = d3.axisBottom(xs);
   var yAxis = d3.axisLeft(ys);
 
-// https://stackoverflow.com/questions/15747987/nested-circles-in-d3
+  d3.select("body").select("svg").selectAll("circle")
+  .remove();
   svg.selectAll("circle")
    .data(myPokemonList)
    .enter()
@@ -176,9 +183,18 @@ var legendo = svg.append("g")
     })
    .attr("width", 10)
    .attr("height", 10)
-  //  .on("click", visilegend(function(d) {
-  //    return d
-  //   }))
+   .on("click", function(d) {
+    d3.select("body").select("svg").selectAll("circle")
+      .transition()
+      .duration(700)
+      .style("opacity", 0.1);
+    let typeclass = "." + d
+    // console.log(typeclass)
+    d3.select("body").select("svg").selectAll("circle").filter(typeclass)
+      .transition()
+      .duration(700)
+      .style("opacity", 1);
+    })
    ;
 
     legendo.selectAll("text")
@@ -188,7 +204,7 @@ var legendo = svg.append("g")
      .attr("class", function(d) {
        return d + " legendtext legendurl"
       })
-     .attr("x", Math.floor((w - margins.right) + margins.right*(3/8)))
+     .attr("x", Math.floor((w - margins.right) + margins.right*(4/8)))
      .attr("y", function(d, i) {
        return Math.floor(
        (i/poketypes.length) * (h - margins.top - margins.bottom) + margins.top) + 9;
@@ -207,18 +223,43 @@ var legendo = svg.append("g")
         // .style("text-anchor", "middle")
         .text("Size: height");
       legendo.append("text")
+        .attr("class", "legendtext legendurl")
+        .attr("x", Math.floor((w - margins.right) + margins.right/4))
+        .attr("y", Math.floor(margins.top*(5/8)))
+        .text("RESET")
+        .on("click", function(d) {
+         d3.select("body").select("svg").selectAll("circle")
+           .transition()
+           .duration(700)
+           .style("opacity", 1);
+         });
+      legendo.append("text")
         .attr("class", "legendTitle")
         .attr("x", Math.floor((w - margins.right) + margins.right/4))
         .attr("y", Math.floor(margins.top*(2/8)))
         // .style("text-anchor", "middle")
-        .text("PokeLegend");
-
+        .text("Legend");
+  if (uninitialized) {
   svg.append('g')
     .attr("transform", "translate(0," + (h - margins.bottom) + ")")
+    .attr("id", "x-axis")
     .call(xAxis)
   svg.append('g')
     .attr("transform", "translate(" + margins.left + ", 0)")
+    .attr("id", "y-axis")
     .call(yAxis)
+  }
+  else {
+  svg.select("#y-axis")
+  	.transition()
+    .duration(700)
+  	.call(yAxis);
+  svg.select("#x-axis")
+  	.transition()
+    .duration(700)
+  	.call(xAxis);
+  }
+
   svg.append("text")
       .attr("y", 0)
       .attr("x",0 - Math.floor((h / 2)))
@@ -254,17 +295,5 @@ var legendo = svg.append("g")
     .text("Random pokemons from pokemon API")
     .on("click", function() { window.open("https://pokeapi.co/");
     });
-
-    function visilegend(typo) {
-    d3.select("body").select("svg").selectAll("circle")
-      // .transition()
-      // .delay(750)
-      .style("visibility", "hidden");
-
-    d3.select("body").select("svg").selectAll("circle").selectAll(typo)
-      // .transition()
-      // .delay(750)
-      .style("visibility", "visible");
-    }
   };
 };
