@@ -4,7 +4,8 @@
 // Hover over for pokeman name and other info maybe
 // colours for type. Maybe add legend
 // size for height or something
-// dropdown for different type filtering
+// dropdown for more pokemon from API
+// legend with filter function
 
 var w = window.innerWidth - 150;
 var h = window.innerHeight - 50;
@@ -17,13 +18,16 @@ var poketypes =
   "water"];
 
 
-var API_HOST = 'https://pokeapi.co/api/v2/';
 var POKEDEX = 'https://pokeapi.co/api/v2/pokemon/';
 //  e.g. https://pokeapi.co/api/v2/pokemon/1/
 var POKEWIKI = 'http://pokemon.wikia.com/wiki/';
 
+// amount of pokeman in the pokeman world
+var pokemanUpperLimit = 949;
 
+// re-initializez when drowdown menu is clicked
 function clickity(num) {
+  // number of pokeman to ask from api
 numPokemans = num;
 w = window.innerWidth - 150;
 h = window.innerHeight - 50;
@@ -31,32 +35,23 @@ uninitialized = false;
 initialize()
 }
 
+// loads on window load
 window.onload = initialize()
 
 function initialize(){
 
+  // list with pokemon objects, this can also be used to cache in future if I want
   var myPokemonList = []
-  // d3.queue()
-  //   .defer(d3.request, POKEDEX)
-  //   .awaitAll(function(error, pokedex) {
-  //     if (error) throw error;
 
-      // pokemans = JSON.parse(pokedex[0].response)
-      // console.log(pokemans);
-      // pokemanUpperLimit = pokemans.count;
-      pokemanUpperLimit = 949;
-
-      let helloThere = d3.queue();
-      for (let i = 1; i <= numPokemans; ++i) {
-        // console.log(pokemans[i])
-        let randomi = Math.floor(Math.random() * (pokemanUpperLimit/8)) + 1
-        // console.log(randomi)
-        helloThere.defer(d3.request, POKEDEX + randomi)
-        // if (i === 5) { break; }
-      }
-        helloThere.awaitAll(pokeFun);
-    // });
-
+  let helloThere = d3.queue();
+  for (let i = 1; i <= numPokemans; ++i) {
+    // I wanted to get a unique list of integers to not get duplicates (for future)
+    let randomi = Math.floor(Math.random() * (pokemanUpperLimit/8)) + 1
+    helloThere.defer(d3.request, POKEDEX + randomi)
+    // if (i === 5) { break; }
+  }
+    // created new function jus in case I wanted to change code and did not want to call
+    helloThere.awaitAll(pokeFun);
 
   function pokeFun(error, pokemonStats) {
     if (error) throw error;
@@ -75,13 +70,12 @@ function initialize(){
       }
     }
 
-  // Clears the screen
-  d3.select("body").selectAll(".tooltip")
-  .remove();
+  // Clears the screen of circles with transitions? (does not work?)
   d3.select("body").select("svg").selectAll("circle")
     .transition()
     .duration(700)
     .attr("r", 0);
+
   // AXES and transforms!
   var xs = d3.scaleLinear()
       .domain([d3.max(myPokemonList, function(d){
@@ -96,29 +90,32 @@ function initialize(){
             return d.stats[0].base_stat;
         }) * (9/8), d3.max(myPokemonList, function(d){
               return d.stats[0].base_stat;
-          }) * -(1/32)])
-      .range([margins.top, (h - margins.bottom)]);
-  var div = d3.select("body").append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
+          }) * -(1/32)])  // pre-create
 
+      .range([margins.top, (h - margins.bottom)]);
+  // creates svg and tooltip div from scratch if not initialized
   if (uninitialized) {
-    // DO SVG SCATTERPLOT HERE
     var svg = d3.select("body")
       .append("svg")
       .attr("width", w)
-      .attr("height", h)
+      .attr("height", h);
+
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
   }
+  // else only select it
   else {
-    var svg = d3.select("body").select("svg")
+    var svg = d3.select("body").select("svg");
+    var div = d3.select("body").select(".tooltip");
   }
   // make them axes
-
   var xAxis = d3.axisBottom(xs);
   var yAxis = d3.axisLeft(ys);
-
+  // remove all previous circles
   d3.select("body").select("svg").selectAll("circle")
   .remove();
+  // create new circles with tooltips!
   svg.selectAll("circle")
    .data(myPokemonList)
    .enter()
@@ -142,8 +139,10 @@ function initialize(){
       }
       return pokeclasses
     })
+    // url link to wiki page
     .on("click", function(d) { window.open(POKEWIKI + d.name);
     })
+    // tooltips for circles
     .on("mouseover", function(d) {
       let tooltipinfo = d.name + "<br/>" + "weight: " + d.weight
                                + "<br/>" + "speed: " + d.stats[0].base_stat
@@ -164,11 +163,12 @@ function initialize(){
       div.transition()
         .duration(500)
         .style("opacity", 0);
-      })
+      });
 
+// big section for legend
 var legendo = svg.append("g")
     .attr("class", "legend_box")
-
+    // blocks with interactive element
   legendo.selectAll("rect")
    .data(poketypes)
    .enter()
@@ -196,7 +196,7 @@ var legendo = svg.append("g")
       .style("opacity", 1);
     })
    ;
-
+  // pokemon type text with url to wiki
     legendo.selectAll("text")
      .data(poketypes)
      .enter()
@@ -216,6 +216,7 @@ var legendo = svg.append("g")
       })
       // .style("text-anchor", "middle")
       ;
+      // table titles
       legendo.append("text")
         .attr("class", "legendtext")
         .attr("x", Math.floor((w - margins.right) + margins.right/4))
@@ -239,6 +240,8 @@ var legendo = svg.append("g")
         .attr("y", Math.floor(margins.top*(2/8)))
         // .style("text-anchor", "middle")
         .text("Legend");
+
+  // only create axes if not initialized, otherwise select and transition
   if (uninitialized) {
   svg.append('g')
     .attr("transform", "translate(0," + (h - margins.bottom) + ")")
@@ -259,7 +262,7 @@ var legendo = svg.append("g")
     .duration(700)
   	.call(xAxis);
   }
-
+  // y-axis text
   svg.append("text")
       .attr("y", 0)
       .attr("x",0 - Math.floor((h / 2)))
@@ -268,7 +271,7 @@ var legendo = svg.append("g")
       .attr("fill", "red")
       .style("text-anchor", "middle")
       .text("Speed");
-    // x-axis
+    // x-axis text
   svg.append("text")
     .attr("fill", "red")
     .attr("transform",
@@ -277,6 +280,7 @@ var legendo = svg.append("g")
     .style("text-anchor", "middle")
     .text("Weight");
 
+    // titles
   svg.append("text")
     .attr("x", "50")
     .attr("y", "40")
