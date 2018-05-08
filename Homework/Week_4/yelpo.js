@@ -12,6 +12,7 @@ var h = window.innerHeight - 50;
 var margins = {"right": 100, "left":60, "bottom": 50, "top": 50};
 var uninitialized = true;
 var numPokemans = 5;
+var myPokemonList = []
 var poketypes =
   ["fire", "poison", "bug", "dark", "dragon", "electric", "fairy", "fighting",
   "flying", "ghost", "grass", "ground", "ice", "normal", "psychic", "rock", "steel",
@@ -41,7 +42,7 @@ window.onload = initialize()
 function initialize(){
 
   // list with pokemon objects, this can also be used to cache in future if I want
-  var myPokemonList = []
+
 
   let helloThere = d3.queue();
   for (let i = 1; i <= numPokemans; ++i) {
@@ -71,10 +72,10 @@ function initialize(){
     }
 
   // Clears the screen of circles with transitions? (does not work?)
-  d3.select("body").select("svg").selectAll("circle")
+  d3.select("body").select("svg").selectAll("image")
     .transition()
     .duration(700)
-    .attr("r", 0);
+    .attr("opacity", 0);
 
   // AXES and transforms!
   var xs = d3.scaleLinear()
@@ -116,54 +117,60 @@ function initialize(){
   d3.select("body").select("svg").selectAll("circle")
   .remove();
   // create new circles with tooltips!
-  svg.selectAll("circle")
-   .data(myPokemonList)
-   .enter()
-   .append("circle")
-   .attr("cx", function(d) {
-         return Math.floor(xs(d.weight));
-    })
-    .attr("cy", function(d) {
-         return Math.floor(ys(d.stats[0].base_stat));
-    })
-    .attr("r", function(d) {
-         return d.height + 5;
-    })
-    .style("stroke-width", 1)
-    .style("stroke", "black")
+
+  svg.selectAll("image")
+    .data(myPokemonList)
+    .enter()
+    .append("image")
+    .attr('xlink:href', function(d){
+         return d.sprites.front_default
+         })
+    .attr("x", function(d) {
+         return Math.floor(xs(d.weight) - 25 - d.height);
+         })
+    .attr("y", function(d) {
+         return Math.floor(ys(d.stats[0].base_stat) - 25 - d.height);
+         })
+    .attr("width", function(d) {
+         return 50 + d.height*2;
+         })
+    .attr("height", function(d) {
+         return 50 + d.height*2;
+         })
     .attr("class", function(d) {
-      let pokeclasses = "scatter "
-      for (let k = 0; k < d.types.length; k++){
-        // console.log(d.types[k].type.name)
-        pokeclasses = pokeclasses + (d.types[k].type.name) + " "
-      }
-      return pokeclasses
-    })
+           let pokeclasses = "scatter "
+           for (let k = 0; k < d.types.length; k++){
+           // console.log(d.types[k].type.name)
+           pokeclasses = pokeclasses + (d.types[k].type.name) + " "
+           }
+         return pokeclasses
+         })
     // url link to wiki page
-    .on("click", function(d) { window.open(POKEWIKI + d.name);
-    })
+     .on("click", function(d) { window.open(POKEWIKI + d.name);
+        })
     // tooltips for circles
-    .on("mouseover", function(d) {
-      let tooltipinfo = d.name + "<br/>" + "weight: " + d.weight
-                               + "<br/>" + "speed: " + d.stats[0].base_stat
-                               + "<br/>" + "height: " + d.height
-                               + "<br/>" + "type(s): "
-      for (let k = 0; k < d.types.length; k++){
-        // console.log(d.types[k].type.name)
-        tooltipinfo = tooltipinfo + (d.types[k].type.name) + " "
-      }
-      div.transition()
-        .duration(200)
-        .style("opacity", .9);
-      div.html(tooltipinfo)
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY - 28) + "px");
-      })
-    .on("mouseout", function(d) {
-      div.transition()
-        .duration(500)
-        .style("opacity", 0);
-      });
+     .on("mouseover", function(d) {
+        // d3.select(this).moveToFront();
+        let tooltipinfo = d.name + "<br/>" + "weight: " + d.weight
+                                 + "<br/>" + "speed: " + d.stats[0].base_stat
+                                 + "<br/>" + "height: " + d.height
+                                 + "<br/>" + "type(s): "
+        for (let k = 0; k < d.types.length; k++){
+          // console.log(d.types[k].type.name)
+          tooltipinfo = tooltipinfo + (d.types[k].type.name) + " "
+        }
+        div.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div.html(tooltipinfo)
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY - 28) + "px");
+        })
+     .on("mouseout", function(d) {
+        div.transition()
+          .duration(500)
+          .style("opacity", 0);
+        });
 
 // big section for legend
 var legendo = svg.append("g")
@@ -184,13 +191,13 @@ var legendo = svg.append("g")
    .attr("width", 10)
    .attr("height", 10)
    .on("click", function(d) {
-    d3.select("body").select("svg").selectAll("circle")
+    d3.select("body").select("svg").selectAll("image")
       .transition()
       .duration(700)
       .style("opacity", 0.1);
     let typeclass = "." + d
     // console.log(typeclass)
-    d3.select("body").select("svg").selectAll("circle").filter(typeclass)
+    d3.select("body").select("svg").selectAll("image").filter(typeclass)
       .transition()
       .duration(700)
       .style("opacity", 1);
@@ -229,7 +236,7 @@ var legendo = svg.append("g")
         .attr("y", Math.floor(margins.top*(5/8)))
         .text("RESET")
         .on("click", function(d) {
-         d3.select("body").select("svg").selectAll("circle")
+         d3.select("body").select("svg").selectAll("image")
            .transition()
            .duration(700)
            .style("opacity", 1);
