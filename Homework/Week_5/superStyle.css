@@ -1,0 +1,90 @@
+.fire {
+  fill: red;
+}
+.poison {
+  fill: green;
+}
+.bug {
+  fill: chartreuse;
+}
+.dark {
+  fill: indigo;
+}
+.dragon {
+  fill: coral;
+}
+.electric {
+  fill: yellow;
+}
+.fairy {
+  fill: pink;
+}
+.fighting {
+  fill: paleturquoise;
+}
+.flying {
+  fill: skyblue;
+}
+.ghost {
+  fill: black;
+}
+.grass {
+  fill: yellowgreen;
+}
+.ground {
+  fill: sienna;
+}
+.ice {
+  fill: turquoise;
+}
+.normal {
+  fill: DarkGrey;
+}
+.psychic {
+  fill: purple;
+}
+.rock {
+  fill: brown;
+}
+.steel {
+  fill: silver;
+}
+.water {
+  fill: blue;
+}
+.title:hover {
+  cursor: pointer;
+}
+.scatter:hover {
+  fill: brown;
+  cursor: pointer;
+}
+.legendblock:hover {
+  fill: brown;
+  cursor: pointer;
+}
+.legendurl:hover {
+  fill: brown;
+  cursor: pointer;
+}
+.legendtext {
+  fill: black;
+  font: 8px sans-serif;
+}
+#legendTitle{
+  fill: black;
+  font: 12px sans-serif;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 180px;
+  height: 80px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
