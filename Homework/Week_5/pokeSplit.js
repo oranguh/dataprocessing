@@ -13,8 +13,8 @@
 // width = (window.innerWidth);
 // height = (window.innerHeight - 50);
 
-w = (window.innerWidth);
-h = (window.innerHeight - 50);
+width = (window.innerWidth);
+height = (window.innerHeight - 50);
 var margins = {"right": 100, "left":60, "bottom": 50, "top": 50};
 var uninitialized = true;
 var initialized = false;
@@ -38,8 +38,8 @@ function clickity(num) {
   // number of pokeman to ask from api
   if (initialized) {
     numPokemans = num;
-    w = (window.innerWidth);
-    h = (window.innerHeight - 50);
+    width = (window.innerWidth);
+    height = (window.innerHeight - 50);
     uninitialized = false;
     redraw()
     }
@@ -85,7 +85,85 @@ function redraw(){
     }
 
   // Clears the screen of circles with transitions? (does not work?)
+  // creates svg and tooltip div from scratch if not initialized
+  if (uninitialized) {
+    d3.select("body").append("svg")
+      .attr("class", "svgContainer")
+      .attr("width", width)
+      .attr("height", height);
+    var container = d3.select(".svgContainer")
 
+    var w = container.node().getBoundingClientRect().width * (3/4)
+    var h = container.node().getBoundingClientRect().height
+
+    var wTree = w/3
+    var hTree = h
+    // console.log(w)
+    // console.log(h)
+    var svgTree = d3.select("body").select(".svgContainer")
+      .append("svg")
+      .attr("class", "treeDiagram")
+      .attr("width", wTree)
+      .attr("height", hTree)
+      .attr("x", wTree * 3)
+        .append("rect")
+        .attr("width", wTree - 50)
+        .attr("height", hTree - 20)
+        .style("stroke", "green")
+        .style("stroke-width", 3)
+        .style("fill-opacity", 0)
+        // .attr("x", wTree * 3)
+        ;
+
+    var svg = d3.select("body").select(".svgContainer")
+      .append("svg")
+      .attr("class", "scatterPlot")
+      .attr("width",  w)
+      .attr("height", h);
+
+
+
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    var legendo = svg.append("g")
+        .attr("class", "legend_box");
+  }
+  // else only select it
+  else {
+    container = d3.select(".svgContainer")
+      .attr("width", width)
+      .attr("height", height);
+
+
+    var w = container.node().getBoundingClientRect().width * (3/4)
+    var h = container.node().getBoundingClientRect().height
+
+    var wTree = w/3
+    var hTree = h
+
+    var svgTree = d3.select("body").select(".treeDiagram")
+      .attr("width", wTree)
+      .attr("height", hTree)
+      .attr("x", wTree * 3);
+    svgTree.select("rect")
+      .transition()
+      .duration(700)
+      .attr("width", wTree - 50)
+      .attr("height", hTree - 20)
+      ;
+
+
+    var svg = d3.select("body").select(".scatterPlot")
+      .attr("width", w)
+      .attr("height", h);
+
+    var div = d3.select("body").select(".tooltip");
+
+    var legendo = svg.select(".legend_box");
+
+  }
   // AXES and transforms!
   var xs = d3.scaleLinear()
       .domain([d3.max(myPokemonList, function(d){
@@ -103,54 +181,6 @@ function redraw(){
           }) * -(1/32)])  // pre-create
 
       .range([margins.top, (h - margins.bottom)]);
-  // creates svg and tooltip div from scratch if not initialized
-  if (uninitialized) {
-    // d3.select("body").append("svg")
-    //   .attr("class", "container")
-    //   .attr("width", width)
-    //   .attr("height", height);
-    // var container = d3.select(".container")
-
-    // var w = container.node().getBBox().width;
-    // var h = container.node().getBBox().height;
-    // console.log(container.node().getBBox().width)
-    // console.log(container.clientWidth)
-    var svg = d3.select("body")
-      .append("svg")
-      .attr("class", "scatterPlot")
-      .attr("width", w)
-      .attr("height", h);
-    // var svg = d3.select("body")
-    //   .append("svg")
-    //   .attr("class", "treeDiagram")
-    //   .attr("width", w)
-    //   .attr("height", h);
-
-    var div = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
-
-    var legendo = svg.append("g")
-        .attr("class", "legend_box");
-  }
-  // else only select it
-  else {
-    // container = d3.select(".container")
-    //   .attr("width", width)
-    //   .attr("height", height);
-
-    // var w = container.node().getBBox().width;
-    // var h = container.node().getBBox().height;
-    // console.log(container.node().getBBox().width)
-    // console.log(container.node().getBBox().height)
-    var svg = d3.select("body").select(".scatterPlot")
-      .attr("width", w)
-      .attr("height", h);
-    var div = d3.select("body").select(".tooltip");
-
-    var legendo = svg.select(".legend_box");
-
-  }
   // make them axes
   var xAxis = d3.axisBottom(xs);
   var yAxis = d3.axisLeft(ys);
