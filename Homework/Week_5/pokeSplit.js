@@ -21,7 +21,7 @@ var uninitialized = true;
 var initialized = false;
 var numPokemans = 5;
 var myPokemonList = []
-
+// var myPokemonIntegerList = []
 var yAxisValue = 0
 var yAxisLabel = "Speed"
 
@@ -121,36 +121,23 @@ function initialize(){
 function redraw(){
 
   // list with pokemon objects, this can also be used to cache in future if I want
-
-
   let helloThere = d3.queue();
   for (let i = 1; i <= numPokemans; ++i) {
-    // I wanted to get a unique list of integers to not get duplicates (for future)
+    // I want to get a unique list of integers to not get duplicates (for future)
     let randomi = Math.floor(Math.random() * pokemanUpperLimit + 1)
     helloThere.defer(d3.request, POKEDEX + randomi)
-    // if (i === 5) { break; }
   }
     // created new function jus in case I wanted to change code and did not want to call
     helloThere.awaitAll(pokeFun);
 
   function pokeFun(error, pokemonStats) {
     if (error) throw error;
-    // console.log(pokemonStats);
-    // console.log([...Array(40)].map(_=>Math.ceil(Math.random()*40)))
     for (let i = 0; i < pokemonStats.length; i++){
       plokemon = JSON.parse(pokemonStats[i].response)
-      // console.log(plokemon);
-
       myPokemonList.push(plokemon)
-      // console.log(myPokemonList[i].weight)
-      // console.log(myPokemonList[i].stats[0].base_stat)
-      for (let k = 0; k < myPokemonList[i].types.length; k++){
-        // console.log(myPokemonList[i].types[k].type.name)
-
-      }
     }
 
-  // Clears the screen of circles with transitions? (does not work?)
+
   // creates svg and tooltip div from scratch if not initialized
   if (uninitialized) {
     d3.select("body").append("svg")
@@ -290,8 +277,9 @@ function redraw(){
          return pokeclasses
          })
     // url link to wiki page
-     .on("click", function(d) { window.open(POKEWIKI + d.name);
-        })
+     .on("click", function(d) {
+       getEvolution(d)
+     })
     // tooltips for circles
      .on("mouseover", function(d) {
         // d3.select(this).moveToFront();
