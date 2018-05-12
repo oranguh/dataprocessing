@@ -12,7 +12,7 @@
       <script src="pokeSplit.js"></script>
   </head>
   <body onresize="clickity(0)">
-    <div class="dropdown">
+    <!-- <div class="dropdown">
       <button class="btn btn-primary dropdown-toggle" type="button" id="buttonRefresh" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Shuffle Pokemans
       </button>
@@ -21,27 +21,54 @@
         <a class="dropdown-item" href="#" onclick="clickity(20)">get 20 (Slower)</a>
         <a class="dropdown-item" href="#" onclick="clickity(30)">get 30 (Slowpoke!)</a>
       </div>
-    <!-- </div>
-    <div class="dropdown"> -->
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="buttonX" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        X-Axis
-      </button>
-      <div class="dropdown-menu" aria-labelledby="buttonX">
-        <a class="dropdown-item" href="#" onclick="clickity(0)">Weight</a>
-        <a class="dropdown-item" href="#" onclick="clickity(0)">Height</a>
-        <a class="dropdown-item" href="#" onclick="clickity(0)">Speed</a>
-      </div>
-    <!-- </div>
-    <div class="dropdown"> -->
-      <button class="btn btn-success dropdown-toggle" type="button" id="buttonY" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Y-Axis
-      </button>
-      <div class="dropdown-menu" aria-labelledby="buttonY">
-        <a class="dropdown-item" href="#" onclick="clickity(0)">Weight</a>
-        <a class="dropdown-item" href="#" onclick="clickity(0)">Height</a>
-        <a class="dropdown-item" href="#" onclick="clickity(0)">Speed</a>
-      </div>
-    </div>
+    </div> -->
+
+    <div class="row">
+        <!-- Split button -->
+        <div class="dropdown btn-group btn-group-block col-xs-12 col-md-2" role="group">
+            <button type="button" class="btn btn-danger btn btn-block">Get Pokemon</button>
+            <button type="button" class="btn btn-danger btn dropdown-toggle" data-toggle="dropdown" href="#" id="dropdownMenuLink1" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <li><a href="#" onclick="clickity(10)">get 10 (Slow)</li>
+                <li><a href="#" onclick="clickity(20)">get 20 (Slower)</a></li>
+                <li><a href="#" onclick="clickity(30)">get 30 (Slowpoke!)</a></li>
+            </ul>
+        </div>
+        <div class="dropdown btn-group btn-group-block col-xs-12 col-md-2" role="group">
+            <button type="button" class="btn btn-success btn btn-block">X-Axis</button>
+            <button type="button" class="btn btn-success btn dropdown-toggle" data-toggle="dropdown" href="#" id="dropdownMenuLink2" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink2">
+              <li><a href="#" onclick="axickity(0, 'x')">Speed</a></li>
+              <li><a href="#" onclick="axickity(1, 'x')">Spec-Def</a></li>
+              <li><a href="#" onclick="axickity(2, 'x')">Spec-Atk</a></li>
+              <li><a href="#" onclick="axickity(3, 'x')">Defence</a></li>
+              <li><a href="#" onclick="axickity(4, 'x')">Attack</a></li>
+              <li><a href="#" onclick="axickity(5, 'x')">HP</a></li>
+            </ul>
+        </div>
+        <div class="dropdown btn-group btn-group-block col-xs-12 col-md-2" role="group">
+            <button type="button" class="btn btn-primary btn btn-block">Y-axis</button>
+            <button type="button" class="btn btn-primary btn dropdown-toggle" data-toggle="dropdown" href="#" id="dropdownMenuLink3" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink3">
+                <li><a href="#" onclick="axickity(0, 'y')">Speed</a></li>
+                <li><a href="#" onclick="axickity(1, 'y')">Spec-Def</a></li>
+                <li><a href="#" onclick="axickity(2, 'y')">Spec-Atk</a></li>
+                <li><a href="#" onclick="axickity(3, 'y')">Defence</a></li>
+                <li><a href="#" onclick="axickity(4, 'y')">Attack</a></li>
+                <li><a href="#" onclick="axickity(5, 'y')">HP</a></li>
+            </ul>
+        </div>
+	</div>
+
     <!-- <div id="container"></div> -->
     <!-- This is where your scatter plot will go -->
     <!-- omg there's no scatter! spooky!!11!!11one!111 -->

@@ -16,10 +16,18 @@
 width = (window.innerWidth);
 height = (window.innerHeight - 50);
 var margins = {"right": 100, "left":60, "bottom": 50, "top": 50};
+var marginsTree = {"right": 25, "left":25, "bottom": 50, "top": 50};
 var uninitialized = true;
 var initialized = false;
 var numPokemans = 5;
 var myPokemonList = []
+
+var yAxisValue = 0
+var yAxisLabel = "Speed"
+
+var xAxisValue = 4
+var xAxisLabel = "Attack"
+
 var poketypes =
   ["fire", "poison", "bug", "dark", "dragon", "electric", "fairy", "fighting",
   "flying", "ghost", "grass", "ground", "ice", "normal", "psychic", "rock", "steel",
@@ -38,6 +46,64 @@ function clickity(num) {
   // number of pokeman to ask from api
   if (initialized) {
     numPokemans = num;
+    width = (window.innerWidth);
+    height = (window.innerHeight - 50);
+    uninitialized = false;
+    redraw()
+    }
+}
+
+function axickity(num, axis) {
+  // number of pokeman to ask from api
+  if (initialized) {
+
+    if (axis === "x"){
+      xAxisValue = num
+      switch(num) {
+        case 0:
+            xAxisLabel = "Speed"
+            break;
+        case 1:
+            xAxisLabel = "Spec-Def"
+            break;
+        case 2:
+            xAxisLabel = "Spec-Atk"
+            break;
+        case 3:
+            xAxisLabel = "Defence"
+            break;
+        case 4:
+            xAxisLabel = "Attack"
+            break;
+        case 5:
+            xAxisLabel = "HP"
+            break;
+        }
+    }
+    else {
+      yAxisValue = num
+      switch(num) {
+        case 0:
+            yAxisLabel = "Speed"
+            break;
+        case 1:
+            yAxisLabel = "Spec-Def"
+            break;
+        case 2:
+            yAxisLabel = "Spec-Atk"
+            break;
+        case 3:
+            yAxisLabel = "Defence"
+            break;
+        case 4:
+            yAxisLabel = "Attack"
+            break;
+        case 5:
+            yAxisLabel = "HP"
+            break;
+        }
+    }
+    numPokemans = 0;
     width = (window.innerWidth);
     height = (window.innerHeight - 50);
     uninitialized = false;
@@ -93,11 +159,11 @@ function redraw(){
       .attr("height", height);
     var container = d3.select(".svgContainer")
 
-    var w = container.node().getBoundingClientRect().width * (3/4)
-    var h = container.node().getBoundingClientRect().height
+    var w = Math.floor(container.node().getBoundingClientRect().width * (3/4))
+    var h = Math.floor(container.node().getBoundingClientRect().height)
 
-    var wTree = w/3
-    var hTree = h
+    var wTree = Math.floor(w/3)
+    var hTree = Math.floor(h)
     // console.log(w)
     // console.log(h)
     var svgTree = d3.select("body").select(".svgContainer")
@@ -107,8 +173,8 @@ function redraw(){
       .attr("height", hTree)
       .attr("x", wTree * 3)
         .append("rect")
-        .attr("width", wTree - 50)
-        .attr("height", hTree - 20)
+        .attr("width", wTree - 20)
+        .attr("height", hTree - 0)
         .style("stroke", "green")
         .style("stroke-width", 3)
         .style("fill-opacity", 0)
@@ -137,14 +203,14 @@ function redraw(){
       .attr("height", height);
 
 
-    var w = container.node().getBoundingClientRect().width * (3/4)
-    var h = container.node().getBoundingClientRect().height
+    var w = Math.floor(container.node().getBoundingClientRect().width * (3/4))
+    var h = Math.floor(container.node().getBoundingClientRect().height)
 
-    var wTree = w/3
-    var hTree = h
+    var wTree = Math.floor(w/3)
+    var hTree = Math.floor(h)
 
     var svgTree = d3.select("body").select(".treeDiagram")
-      .attr("width", wTree)
+      .attr("width", wTree - 20)
       .attr("height", hTree)
       .attr("x", wTree * 3);
     svgTree.select("rect")
@@ -167,17 +233,17 @@ function redraw(){
   // AXES and transforms!
   var xs = d3.scaleLinear()
       .domain([d3.max(myPokemonList, function(d){
-            return d.weight;
+            return d.stats[xAxisValue].base_stat ;
         }) * -(1/32), d3.max(myPokemonList, function(d){
-            return d.weight;
+            return d.stats[xAxisValue].base_stat;
         }) * (9/8)])
       .range([margins.left, (w - margins.right)]);
 
   var ys = d3.scaleLinear()
       .domain([d3.max(myPokemonList, function(d){
-            return d.stats[0].base_stat;
+            return d.stats[yAxisValue].base_stat;
         }) * (9/8), d3.max(myPokemonList, function(d){
-              return d.stats[0].base_stat;
+              return d.stats[yAxisValue].base_stat;
           }) * -(1/32)])  // pre-create
 
       .range([margins.top, (h - margins.bottom)]);
@@ -190,10 +256,10 @@ function redraw(){
     .transition()
     .duration(700)
     .attr("x", function(d) {
-         return Math.floor(xs(d.weight) - 25 - d.height);
+         return Math.floor(xs(d.stats[xAxisValue].base_stat) - 25 - d.height);
          })
     .attr("y", function(d) {
-         return Math.floor(ys(d.stats[0].base_stat) - 25 - d.height);
+         return Math.floor(ys(d.stats[yAxisValue].base_stat) - 25 - d.height);
          });
 
   svg.selectAll("image")
@@ -204,10 +270,10 @@ function redraw(){
          return d.sprites.front_default
          })
     .attr("x", function(d) {
-         return Math.floor(xs(d.weight) - 25 - d.height);
+         return Math.floor(xs(d.stats[xAxisValue].base_stat) - 25 - d.height);
          })
     .attr("y", function(d) {
-         return Math.floor(ys(d.stats[0].base_stat) - 25 - d.height);
+         return Math.floor(ys(d.stats[yAxisValue].base_stat) - 25 - d.height);
          })
     .attr("width", function(d) {
          return 50 + d.height*2;
@@ -269,18 +335,18 @@ function redraw(){
       .attr("x",0 - Math.floor((h / 2)))
       .attr("transform", "rotate(-90)")
       .attr("dy", "1em")
-      .attr("fill", "red")
+      .attr("fill", "blue")
       .style("text-anchor", "middle")
-      .text("Speed");
+      .text(yAxisLabel);
       // x-axis text
     svg.append("text")
       .attr("id", "x-axis-text")
-      .attr("fill", "red")
+      .attr("fill", "green")
       .attr("transform",
             "translate(" + Math.floor((w/2)) + " ," +
                            (h - 7) + ")")
       .style("text-anchor", "middle")
-      .text("Weight");
+      .text(xAxisLabel);
 
       // blocks with interactive element
     legendo.selectAll("rect")
@@ -381,19 +447,15 @@ function redraw(){
         .attr("x",0 - Math.floor((h / 2)))
         .attr("transform", "rotate(-90)")
         .attr("dy", "1em")
-        .attr("fill", "red")
-        .style("text-anchor", "middle")
-        .text("Speed");
+        .text(yAxisLabel);
       // x-axis text
     svg.select("#x-axis-text")
       .transition()
       .duration(700)
-      .attr("fill", "red")
       .attr("transform",
             "translate(" + Math.floor((w/2)) + " ," +
                            (h - 7) + ")")
-      .style("text-anchor", "middle")
-      .text("Weight");
+      .text(xAxisLabel);
 
     legendo.selectAll(".legendblock")
       .transition()
