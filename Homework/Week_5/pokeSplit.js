@@ -21,7 +21,7 @@ var uninitialized = true;
 var initialized = false;
 var numPokemans = 5;
 var myPokemonList = []
-// var myPokemonIntegerList = []
+var myPokemonIntegerList = []
 var yAxisValue = 0
 var yAxisLabel = "Speed"
 
@@ -43,7 +43,7 @@ var pokemanUpperLimit = 151;
 
 // re-initializez when drowdown menu is clicked
 function clickity(num) {
-  // number of pokeman to ask from api
+  // number of pokeman to attempt to ask from api
   if (initialized) {
     numPokemans = num;
     width = (window.innerWidth);
@@ -54,54 +54,36 @@ function clickity(num) {
 }
 
 function axickity(num, axis) {
-  // number of pokeman to ask from api
+  // changes the axes and the labels
   if (initialized) {
-
+    let label = ""
+    switch(num) {
+      case 0:
+          Label = "Speed"
+          break;
+      case 1:
+          Label = "Spec-Def"
+          break;
+      case 2:
+          Label = "Spec-Atk"
+          break;
+      case 3:
+          Label = "Defence"
+          break;
+      case 4:
+          Label = "Attack"
+          break;
+      case 5:
+          Label = "HP"
+          break;
+    }
     if (axis === "x"){
       xAxisValue = num
-      switch(num) {
-        case 0:
-            xAxisLabel = "Speed"
-            break;
-        case 1:
-            xAxisLabel = "Spec-Def"
-            break;
-        case 2:
-            xAxisLabel = "Spec-Atk"
-            break;
-        case 3:
-            xAxisLabel = "Defence"
-            break;
-        case 4:
-            xAxisLabel = "Attack"
-            break;
-        case 5:
-            xAxisLabel = "HP"
-            break;
-        }
+      xAxisLabel = Label
     }
     else {
       yAxisValue = num
-      switch(num) {
-        case 0:
-            yAxisLabel = "Speed"
-            break;
-        case 1:
-            yAxisLabel = "Spec-Def"
-            break;
-        case 2:
-            yAxisLabel = "Spec-Atk"
-            break;
-        case 3:
-            yAxisLabel = "Defence"
-            break;
-        case 4:
-            yAxisLabel = "Attack"
-            break;
-        case 5:
-            yAxisLabel = "HP"
-            break;
-        }
+      yAxisLabel = Label
     }
     numPokemans = 0;
     width = (window.innerWidth);
@@ -112,22 +94,21 @@ function axickity(num, axis) {
 }
 
 // loads on window load
-window.onload = initialize()
+window.onload = redraw()
 
-function initialize(){
-
-  redraw()
-}
 function redraw(){
 
-  // list with pokemon objects, this can also be used to cache in future if I want
+  // list with pokemon objects, which also get cached in myPokemonList
   let helloThere = d3.queue();
   for (let i = 1; i <= numPokemans; ++i) {
-    // I want to get a unique list of integers to not get duplicates (for future)
+    // I want to get a unique list of integers to not get duplicates
     let randomi = Math.floor(Math.random() * pokemanUpperLimit + 1)
-    helloThere.defer(d3.request, POKEDEX + randomi)
+    if (!myPokemonIntegerList.includes(randomi)) {
+      myPokemonIntegerList.push(randomi)
+      // console.log(myPokemonIntegerList)
+      helloThere.defer(d3.request, POKEDEX + randomi)
+    }
   }
-    // created new function jus in case I wanted to change code and did not want to call
     helloThere.awaitAll(pokeFun);
 
   function pokeFun(error, pokemonStats) {
@@ -160,12 +141,14 @@ function redraw(){
       .attr("height", hTree)
       .attr("x", wTree * 3)
         .append("rect")
-        .attr("width", wTree - 20)
-        .attr("height", hTree - 0)
+        .attr("width", wTree - 50) // margins right
+        .attr("height", hTree - 20) // margins bot
+        // .attr("x", wTree * 3) // margins left
+        // .attr("y", 0) // margins top
         .style("stroke", "green")
-        .style("stroke-width", 3)
+        .style("stroke-width", 2)
         .style("fill-opacity", 0)
-        // .attr("x", wTree * 3)
+
         ;
 
     var svg = d3.select("body").select(".svgContainer")
@@ -203,8 +186,10 @@ function redraw(){
     svgTree.select("rect")
       .transition()
       .duration(700)
-      .attr("width", wTree - 50)
-      .attr("height", hTree - 20)
+      .attr("width", wTree - 50) // margins right
+      .attr("height", hTree - 20) // margins bot
+      // .attr("x", wTree * 3) // margins left
+      // .attr("y", 0) // margins top
       ;
 
 
