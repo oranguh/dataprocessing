@@ -13,8 +13,13 @@
 // width = (window.innerWidth);
 // height = (window.innerHeight - 50);
 
-width = (window.innerWidth);
-height = (window.innerHeight - 50);
+var width = (window.innerWidth);
+var height = (window.innerHeight - 80);
+var w
+var h
+var wTree
+var hTree
+
 var margins = {"right": 100, "left":60, "bottom": 50, "top": 50};
 var marginsTree = {"right": 25, "left":25, "bottom": 50, "top": 50};
 var uninitialized = true;
@@ -47,7 +52,7 @@ function clickity(num) {
   if (initialized) {
     numPokemans = num;
     width = (window.innerWidth);
-    height = (window.innerHeight - 50);
+    height = (window.innerHeight - 80);
     uninitialized = false;
     redraw()
     }
@@ -127,11 +132,11 @@ function redraw(){
       .attr("height", height);
     var container = d3.select(".svgContainer")
 
-    var w = Math.floor(container.node().getBoundingClientRect().width * (3/4))
-    var h = Math.floor(container.node().getBoundingClientRect().height)
+    w = Math.floor(container.node().getBoundingClientRect().width * (3/4))
+    h = Math.floor(container.node().getBoundingClientRect().height)
 
-    var wTree = Math.floor(w/3)
-    var hTree = Math.floor(h)
+    wTree = Math.floor(w/3)
+    hTree = Math.floor(h)
     // console.log(w)
     // console.log(h)
     var svgTree = d3.select("body").select(".svgContainer")
@@ -173,13 +178,13 @@ function redraw(){
       .attr("height", height);
 
 
-    var w = Math.floor(container.node().getBoundingClientRect().width * (3/4))
-    var h = Math.floor(container.node().getBoundingClientRect().height)
+    w = Math.floor(container.node().getBoundingClientRect().width * (3/4))
+    h = Math.floor(container.node().getBoundingClientRect().height)
 
-    var wTree = Math.floor(w/3)
-    var hTree = Math.floor(h)
+    wTree = Math.floor(w/3)
+    hTree = Math.floor(h)
 
-    var svgTree = d3.select("body").select(".treeDiagram")
+    var svgTree = d3.select("body").select(".treeDiagram").select("rect")
       .attr("width", wTree - 20)
       .attr("height", hTree)
       .attr("x", wTree * 3);
