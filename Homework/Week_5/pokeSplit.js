@@ -184,8 +184,8 @@ function redraw(){
     wTree = Math.floor(w/3)
     hTree = Math.floor(h)
 
-    var svgTree = d3.select("body").select(".treeDiagram").select("rect")
-      .attr("width", wTree - 20)
+    var svgTree = d3.select("body").select(".treeDiagram")
+      .attr("width", wTree)
       .attr("height", hTree)
       .attr("x", wTree * 3);
     svgTree.select("rect")
