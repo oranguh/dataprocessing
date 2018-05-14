@@ -24,7 +24,7 @@ var margins = {"right": 100, "left":60, "bottom": 50, "top": 50};
 var marginsTree = {"right": 25, "left":25, "bottom": 50, "top": 50};
 var uninitialized = true;
 var initialized = false;
-var numPokemans = 5;
+var numPokemans = 2;
 var myPokemonList = []
 var myPokemonIntegerList = []
 var yAxisValue = 0
@@ -55,6 +55,7 @@ function clickity(num) {
     height = (window.innerHeight - 80);
     uninitialized = false;
     redraw()
+    TreeFresh()
     }
 }
 

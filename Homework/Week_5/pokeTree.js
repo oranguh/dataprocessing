@@ -12,6 +12,7 @@
 // http://d3indepth.com/layouts/
 
 // var POKEDEX = 'https://pokeapi.co/api/v2/pokemon/';
+var root
 
 function getEvolution(pokeURL){
 
@@ -65,10 +66,9 @@ function getEvolution(pokeURL){
           }
         }
         evoExploter(pokeChain.chain, pokeTree)
-        // console.log(pokeTree)
-        var root = d3.hierarchy(pokeTree)
-        // console.log(root)
-        // console.log(wTree, hTree)
+
+        root = d3.hierarchy(pokeTree)
+
         d3.select(".treeDrawn").remove()
         drawTree(root)
       })
@@ -88,14 +88,18 @@ function drawTree(root){
   var nodes = root.descendants()
   var links = root.links()
 
-  console.log(nodes)
-  // console.log(links)
-  console.log(nodes[0].data.name)
-  console.log(nodes[0].data.pokeID)
-  console.log(nodes[0].data.sprite)
-  console.log(encodeURIComponent(nodes[0].data.sprite))
-  console.log(typeof nodes[0].data.sprite)
-
+  let imageQueue = d3.queue();
+  for (let i = 0; i < nodes.length; ++i) {
+    imageQueue.defer(d3.request, (POKEDEX + nodes[i].data.pokeID))
+  }
+  imageQueue.awaitAll(function(error, spritefinder) {
+    if (error) throw error;
+      for (let i = 0; i < spritefinder.length; ++i) {
+      spritefound = JSON.parse(spritefinder[i].response)
+      nodes[i].data.sprite = spritefound.sprites.front_default
+    TreeFresh()
+    }
+  })
   // var node = canvas.selectAll(".node")
   //   .data(nodes)
   //   .enter()
@@ -120,17 +124,18 @@ function drawTree(root){
     .attr('x1', function(d) {return d.source.x;})
     .attr('y1', function(d) {return d.source.y + 50;})
     .attr('x2', function(d) {return d.target.x;})
-    .attr('y2', function(d) {return d.target.y + 50;});
+    .attr('y2', function(d) {return d.target.y + 50;})
+    // .curve(d3.curveLinear);
 
   canvas.selectAll("image")
     .data(nodes)
     .enter()
     .append("image")
     .attr('xlink:href', function(d){
-         return d.data.name
+         return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
          })
-    .attr('x', function(d) {return d.x;})
-    .attr('y', function(d) {return d.y + 50;})
+    .attr('x', function(d) {return d.x - 50;})
+    .attr('y', function(d) {return d.y ;})
     .attr("width", 100)
     .attr("height", 100)
       // .append("text")
@@ -161,6 +166,32 @@ function drawTree(root){
   //   .attr('y1', function(d) {return d.source.y;})
   //   .attr('x2', function(d) {return d.target.x;})
   //   .attr('y2', function(d) {return d.target.y;});
+}
+function TreeFresh(){
+  canvas = d3.select(".treeDiagram")
+  canvas.selectAll("image")
+    .attr('xlink:href', function(d){
+      return d.data.sprite
+    });
 
+  treeLayout = d3.tree()
+  treeLayout.size([wTree - 100, hTree - 100]);
+  treeLayout(root);
 
+  nodes = root.descendants()
+  links = root.links()
+
+  canvas.selectAll(".link")
+    .transition()
+    .duration(700)
+    .attr('x1', function(d) {return d.source.x;})
+    .attr('y1', function(d) {return d.source.y + 50;})
+    .attr('x2', function(d) {return d.target.x;})
+    .attr('y2', function(d) {return d.target.y + 50;})
+
+  canvas.selectAll("image")
+    .transition()
+    .duration(700)
+    .attr('x', function(d) {return d.x - 50;})
+    .attr('y', function(d) {return d.y ;})
 }
