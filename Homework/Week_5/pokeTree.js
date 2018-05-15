@@ -145,10 +145,6 @@ function drawTree(root){
                                 + "<br/>" + "speed: " + d.data.speed
                                 + "<br/>" + "height: " + d.data.height
                                 + "<br/>" + "type(s): " + d.data.types
-      //  for (let k = 0; k < d.types.length; k++){
-      //    // console.log(d.types[k].type.name)
-      //    tooltipinfo = tooltipinfo + (d.types[k].type.name) + " "
-      //  }
        d3.select("body").select(".tooltip").transition()
          .duration(200)
          .style("opacity", .9);
@@ -161,34 +157,7 @@ function drawTree(root){
          .duration(500)
          .style("opacity", 0);
        });
-      // .append("text")
-      // .text(function(d){ return d.data.name;})
-      // .attr('x', function(d) {return d.x + 50;})
-      // .attr('y', function(d) {return d.y + 50;})
 
-
-
-  // d3.select(".treeDiagram").select('g.nodes')
-  //   .selectAll('circle.node')
-  //   .data(root.descendants())
-  //   .enter()
-  //   .append('circle')
-  //   .classed('node', true)
-  //   .attr('cx', function(d) {return d.x;})
-  //   .attr('cy', function(d) {return d.y;})
-  //   .attr('r', 4);
-  //
-  // // Links
-  // d3.select(".treeDiagram").select('g.links')
-  //   .selectAll('line.link')
-  //   .data(root.links())
-  //   .enter()
-  //   .append('line')
-  //   .classed('link', true)
-  //   .attr('x1', function(d) {return d.source.x;})
-  //   .attr('y1', function(d) {return d.source.y;})
-  //   .attr('x2', function(d) {return d.target.x;})
-  //   .attr('y2', function(d) {return d.target.y;});
 }
 function TreeFresh(){
   canvas = d3.select(".treeDiagram")
@@ -201,8 +170,6 @@ function TreeFresh(){
   treeLayout.size([wTree, hTree - 100]);
   treeLayout(root);
 
-  nodes = root.descendants()
-  links = root.links()
 
   canvas.selectAll(".link")
     .transition()
