@@ -129,7 +129,7 @@ function redraw(){
   if (uninitialized) {
     d3.select("body").append("svg")
       .attr("class", "svgContainer")
-      .attr("width", width)
+      .attr("width", width - 50)
       .attr("height", height);
     var container = d3.select(".svgContainer")
 
@@ -147,9 +147,9 @@ function redraw(){
       .attr("height", hTree)
       .attr("x", wTree * 3)
         .append("rect")
-        .attr("width", wTree - 50) // margins right
-        .attr("height", hTree - 20) // margins bot
-        // .attr("x", wTree * 3) // margins left
+        .attr("width", wTree) // margins right
+        .attr("height", hTree) // margins bot
+        // .attr("x", 0) // margins left
         // .attr("y", 0) // margins top
         .style("stroke", "green")
         .style("stroke-width", 2)
@@ -175,7 +175,7 @@ function redraw(){
   // else only select it
   else {
     container = d3.select(".svgContainer")
-      .attr("width", width)
+      .attr("width", width - 50)
       .attr("height", height);
 
 
@@ -192,9 +192,9 @@ function redraw(){
     svgTree.select("rect")
       .transition()
       .duration(700)
-      .attr("width", wTree - 50) // margins right
-      .attr("height", hTree - 20) // margins bot
-      // .attr("x", wTree * 3) // margins left
+      .attr("width", wTree) // margins right
+      .attr("height", hTree) // margins bot
+      // .attr("x", 0) // margins left
       // .attr("y", 0) // margins top
       ;
 

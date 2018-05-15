@@ -48,6 +48,17 @@ function getEvolution(pokeURL){
             if (error) throw error;
             spritefound = JSON.parse(spritefinder.response)
             pokeTree.sprite = spritefound.sprites.front_default
+            console.log(spritefound)
+            pokeTree.weight = spritefound.weight
+            pokeTree.speed = spritefound.stats[0].base_stat
+            pokeTree.height = spritefound.height
+            let typesString = ""
+            for (let k = 0; k < spritefound.types.length; k++){
+               // console.log(d.types[k].type.name)
+               typesString = typesString + (spritefound.types[k].type.name) + " "
+              }
+            pokeTree.types = typesString
+            TreeFresh()
           })
 
           let chainArray = EvoChain.evolves_to;
@@ -82,24 +93,13 @@ function drawTree(root){
       .attr("class", "treeDrawn");
 
   var treeLayout = d3.tree();
-  treeLayout.size([wTree - 100, hTree - 100]);
+  treeLayout.size([wTree, hTree - 100]);
   treeLayout(root);
 
   var nodes = root.descendants()
   var links = root.links()
 
-  let imageQueue = d3.queue();
-  for (let i = 0; i < nodes.length; ++i) {
-    imageQueue.defer(d3.request, (POKEDEX + nodes[i].data.pokeID))
-  }
-  imageQueue.awaitAll(function(error, spritefinder) {
-    if (error) throw error;
-      for (let i = 0; i < spritefinder.length; ++i) {
-      spritefound = JSON.parse(spritefinder[i].response)
-      nodes[i].data.sprite = spritefound.sprites.front_default
-    TreeFresh()
-    }
-  })
+
   // var node = canvas.selectAll(".node")
   //   .data(nodes)
   //   .enter()
@@ -138,6 +138,29 @@ function drawTree(root){
     .attr('y', function(d) {return d.y ;})
     .attr("width", 100)
     .attr("height", 100)
+
+    .on("mouseover", function(d) {
+       // d3.select(this).moveToFront();
+       let tooltipinfo = d.data.name + "<br/>" + "weight: " + d.data.weight
+                                + "<br/>" + "speed: " + d.data.speed
+                                + "<br/>" + "height: " + d.data.height
+                                + "<br/>" + "type(s): " + d.data.types
+      //  for (let k = 0; k < d.types.length; k++){
+      //    // console.log(d.types[k].type.name)
+      //    tooltipinfo = tooltipinfo + (d.types[k].type.name) + " "
+      //  }
+       d3.select("body").select(".tooltip").transition()
+         .duration(200)
+         .style("opacity", .9);
+       d3.select("body").select(".tooltip").html(tooltipinfo)
+         .style("left", (d3.event.pageX) + "px")
+         .style("top", (d3.event.pageY - 28) + "px");
+       })
+    .on("mouseout", function(d) {
+       d3.select("body").select(".tooltip").transition()
+         .duration(500)
+         .style("opacity", 0);
+       });
       // .append("text")
       // .text(function(d){ return d.data.name;})
       // .attr('x', function(d) {return d.x + 50;})
@@ -175,7 +198,7 @@ function TreeFresh(){
     });
 
   treeLayout = d3.tree()
-  treeLayout.size([wTree - 100, hTree - 100]);
+  treeLayout.size([wTree, hTree - 100]);
   treeLayout(root);
 
   nodes = root.descendants()
