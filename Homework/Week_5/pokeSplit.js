@@ -244,8 +244,7 @@ function redraw(){
                              (h - 7) + ")")
         .style("text-anchor", "middle")
         .text(xAxisLabel);
-        // blocks with interactive element
-
+      // blocks with interactive element
       legendo.append("rect")
         .attr("class", "outlineLegend")
         .attr("width", 70)

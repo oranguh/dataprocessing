@@ -16,7 +16,6 @@
 var root
 
 function getEvolution(pokeURL){
-
   var svgTree = d3.select("body").select(".treeDiagram")
   var pokeTree
   // queries the "species page" for the clicked pokemon
@@ -31,19 +30,19 @@ function getEvolution(pokeURL){
     treeQueue.await(function(error, pokeEvoChain) {
       if (error) throw error;
       // Once inside the "evolution page" recursively explore the json object
-        pokeChain = JSON.parse(pokeEvoChain.response)
-        // root element for evolution tree
-        var pokeTree = {"name": "", "pokeID": "", "sprite": ""}
-        // recursive function to populate tree
-        evoExplorer(pokeChain.chain, pokeTree)
-        // from the datastructure use d3.hierarchy
-        root = d3.hierarchy(pokeTree)
-        // remove any previously drawn tree
-        d3.select(".treeDrawn").remove()
-        // draw tree with d3.hierarchy data
-        drawTree(root)
-      })
-    });
+      pokeChain = JSON.parse(pokeEvoChain.response)
+      // root element for evolution tree
+      var pokeTree = {"name": "", "pokeID": "", "sprite": ""}
+      // recursive function to populate tree
+      evoExplorer(pokeChain.chain, pokeTree)
+      // from the datastructure use d3.hierarchy
+      root = d3.hierarchy(pokeTree)
+      // remove any previously drawn tree
+      d3.select(".treeDrawn").remove()
+      // draw tree with d3.hierarchy data
+      drawTree(root)
+    })
+  });
 }
 function drawTree(root){
   // creates g element
@@ -55,13 +54,12 @@ function drawTree(root){
   treeLayout(root);
   var nodes = root.descendants()
   var links = root.links()
-
   var diagonal = d3.linkVertical();
-  canvas.selectAll(".link")
+  canvas.selectAll(".treeLink")
     .data(links)
     .enter()
     .append("line")
-    .attr("class", "link")
+    .attr("class", "treeLink")
     .attr("d", diagonal)
     .attr("fill", "none")
     .attr("stroke", "gray")
@@ -74,6 +72,7 @@ function drawTree(root){
     .data(nodes)
     .enter()
     .append("image")
+    .attr("class", "treeImage")
     .attr('xlink:href', function(d){
           return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
          })
@@ -97,6 +96,8 @@ function drawTree(root){
        d3.select("body").select(".tooltip").transition()
          .duration(500)
          .style("opacity", 0);
+       })
+    .on("click", function(d) { window.open(POKEWIKI + d.data.name);
        });
 }
 // refresh function
@@ -117,14 +118,14 @@ function TreeFresh(){
     treeLayout.size([wTree, hTree - 100]);
     treeLayout(root);
     // updates positional information for tree
-    canvas.selectAll(".link")
+    canvas.selectAll(".treeLink")
       .transition()
       .duration(700)
       .attr('x1', function(d) {return d.source.x;})
       .attr('y1', function(d) {return d.source.y + 50;})
       .attr('x2', function(d) {return d.target.x;})
       .attr('y2', function(d) {return d.target.y + 50;})
-    canvas.selectAll("image")
+    canvas.selectAll(".treeImage")
       .transition()
       .duration(700)
       .attr('x', function(d) {return d.x - 50;})
@@ -132,7 +133,7 @@ function TreeFresh(){
   }
 }
 // evoExplorer is a recursive function which creates a tree datastructure
-// for pokemon evolution
+// for pokemon evolutions
 function evoExplorer(EvoChain, pokeTree){
   // For each node in the tree fill: name, pokemon-ID
   pokeTree.name = EvoChain.species.name;
