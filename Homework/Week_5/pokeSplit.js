@@ -74,22 +74,32 @@ function redraw(){
         .attr("width", width - 50)
         .attr("height", height);
       var container = d3.select(".svgContainer")
-      w = Math.floor(container.node().getBoundingClientRect().width * (3/4))
-      h = Math.floor(container.node().getBoundingClientRect().height)
+      w = (width - 50) * (3/4)
+      h = height
       wTree = Math.floor(w/3)
       hTree = Math.floor(h)
       var svgTree = d3.select("body").select(".svgContainer")
-        .append("svg")
-        .attr("class", "treeDiagram")
-        .attr("width", wTree)
-        .attr("height", hTree)
-        .attr("x", wTree * 3)
-          .append("rect")
+          .append("svg")
+          .attr("class", "treeDiagram")
           .attr("width", wTree)
           .attr("height", hTree)
-          .style("stroke", "green")
-          .style("stroke-width", 2)
-          .style("fill-opacity", 0);
+          .attr("x", wTree * 3)
+            .append("rect")
+            .attr("width", wTree)
+            .attr("height", hTree)
+            .style("stroke", "green")
+            .style("stroke-width", 2)
+            .style("fill-opacity", 0);
+      d3.select("body").select(".svgContainer").select(".treeDiagram")
+        .append("text")
+        .attr("x", "5")
+        .attr("y", "15")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "15px")
+        .attr("font-weight", "bold")
+        .attr("fill", "darkgreen")
+        .text("Pokemon Evolution");
+
       var svg = d3.select("body").select(".svgContainer")
         .append("svg")
         .attr("class", "scatterPlot")
@@ -107,8 +117,8 @@ function redraw(){
         .attr("width", width - 50)
         .attr("height", height);
       // update dimensions
-      w = Math.floor(container.node().getBoundingClientRect().width * (3/4))
-      h = Math.floor(container.node().getBoundingClientRect().height)
+      w = (width - 50) * (3/4)
+      h = height
       wTree = Math.floor(w/3)
       hTree = Math.floor(h)
       var svgTree = d3.select("body").select(".treeDiagram")
@@ -235,7 +245,18 @@ function redraw(){
         .style("text-anchor", "middle")
         .text(xAxisLabel);
         // blocks with interactive element
-      legendo.selectAll("rect")
+
+      legendo.append("rect")
+        .attr("class", "outlineLegend")
+        .attr("width", 70)
+        .attr("height", h - margins.bottom)
+        .attr("x", Math.floor((w - margins.right) + margins.right*(2/8)) - 3)
+        .attr("y", 0)
+        .style("stroke", "green")
+        .style("stroke-width", 1)
+        .style("fill-opacity", 0);
+
+      legendo.selectAll("rect .legendblock")
        .data(poketypes)
        .enter()
        .append("rect")
@@ -300,7 +321,6 @@ function redraw(){
         .attr("id", "legendTitle")
         .attr("x", Math.floor((w - margins.right) + margins.right/4))
         .attr("y", Math.floor(margins.top*(2/8)))
-        // .style("text-anchor", "middle")
         .text("Legend");
     }
     else {
@@ -330,6 +350,11 @@ function redraw(){
               "translate(" + Math.floor((w/2)) + " ," +
                              (h - 7) + ")")
         .text(xAxisLabel);
+      legendo.select(".outlineLegend")
+        .transition()
+        .duration(700)
+        .attr("width", 70)
+        .attr("height", h - margins.bottom)
       legendo.selectAll(".legendblock")
         .transition()
         .duration(700)
