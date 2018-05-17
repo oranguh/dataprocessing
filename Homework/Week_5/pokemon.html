@@ -1,8 +1,16 @@
+<!--
+Marco Heuvelman 6434592 / 10176306
+
+The online html validator claims there are errors, but when I attempt to "fix"
+these errors the layout degrades.
+ -->
+
 <!DOCTYPE html>
 <html utf8>
   <head>
-      <title>POKEMON GOTTA CATCH EM ALL</title>
+      <title>GOTTA CATCH EM ALL</title>
       <meta charset="utf-8">
+      <link rel="icon" href="https://upload.wikimedia.org/wikipedia/en/3/39/Pokeball.PNG">
       <script src="https://d3js.org/d3.v4.js"></script>
       <link href="superStyle.css" rel="stylesheet"/>
       <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -22,7 +30,7 @@
                 <span class="sr-only">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <li><a href="#" onclick="clickity(10)">get 10 (Slow)</li>
+                <li><a href="#" onclick="clickity(10)">get 10 (Slow)</a></li>
                 <li><a href="#" onclick="clickity(20)">get 20 (Slower)</a></li>
                 <li><a href="#" onclick="clickity(30)">get 30 (Slowpoke!)</a></li>
             </ul>
@@ -55,6 +63,17 @@
                 <li><a href="#" onclick="axickity(3, 'y')">Defence</a></li>
                 <li><a href="#" onclick="axickity(4, 'y')">Attack</a></li>
                 <li><a href="#" onclick="axickity(5, 'y')">HP</a></li>
+            </ul>
+        </div>
+        <div class="dropdown btn-group btn-group-block col-xs-12 col-md-2" role="group">
+            <button type="button" class="btn btn-secondary btn btn-block">Links</button>
+            <button type="button" class="btn btn-secondary btn dropdown-toggle" data-toggle="dropdown" href="#" id="dropdownMenuLink3" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink3">
+                <li><a href="designStory.html">Design Story</a></li>
+                <li><a href="designDecisions.html">Design Decisions</a></li>
             </ul>
         </div>
 	</div>

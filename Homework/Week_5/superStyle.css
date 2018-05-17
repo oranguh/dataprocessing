@@ -1,3 +1,12 @@
+/*
+Marco Heuvelman  10176306
+data source https://www.pokeapi.co/
+
+CSS for scatter plot
+Most CSS is for the pokemon type color, which change the color of the legend
+blocks.
+Furthermore the div-tooltip is styled here.
+*/
 .fire {
   fill: red;
 }

@@ -1,16 +1,16 @@
-// Marco Heuvelman  10176306
-//  https://www.pokeapi.co/
+/*
+Marco Heuvelman  10176306
+data source https://www.pokeapi.co/
 
-// Hover over for pokeman name and other info maybe
-// colours for type. Maybe add legend
-// size for height or something
-// dropdown for more pokemon from API
-// legend with filter function
+Function which fires after a mouse click event on a pokemon
+Calls API for extra pokemon data regarding evolution and creates tree figure
+Uses d3.hierarchy() to convert data into correct format for d3.tree()
 
-// Inspiration to make tree graph from following links
-// http://bl.ocks.org/d3noob/8324872
-// https://www.youtube.com/watch?v=iZ6MSHA4FMU&index=14&list=PL6il2r9i3BqH9PmbOf5wA5E1wOG3FT22p
-// http://d3indepth.com/layouts/
+Inspiration to make tree graph from following links
+http://bl.ocks.org/d3noob/8324872
+https://www.youtube.com/watch?v=iZ6MSHA4FMU&index=14&list=PL6il2r9i3BqH9PmbOf5wA5E1wOG3FT22p
+http://d3indepth.com/layouts/
+*/
 
 // global variable root to determine if tree is initialized
 var root

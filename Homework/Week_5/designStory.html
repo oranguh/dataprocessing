@@ -1,0 +1,78 @@
+<!--
+Marco Heuvelman 6434592 / 10176306
+
+
+ -->
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Pokemon story</title>
+        <link rel="icon" href="https://upload.wikimedia.org/wikipedia/en/3/39/Pokeball.PNG">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <link href="bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+      <div class="row">
+          <div class="dropdown btn-group btn-group-block col-xs-12 col-md-2" role="group">
+              <button class="btn btn-secondary btn btn-block">Links</button>
+              <button class="btn btn-secondary btn dropdown-toggle" data-toggle="dropdown" href="#" id="dropdownMenuLink1" role="button" aria-haspopup="true" aria-expanded="false">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <li><a href="pokemon.html" onclick="clickity(30)">Plots</a></li>
+                  <li><a href="designDecisions.html" onclick="clickity(30)">Design Decisions</a></li>
+              </ul>
+          </div>
+      </div>
+
+      <div style = "width: 70vw">
+          <h2 align = "center">Pokemon outside the wild</h2>
+          <p>
+            Pokemon vary greatly not only in appearance but also in stats.
+            However, navigating through all of the strengths and weaknesses of
+            these pokemon through the game or even a wiki can be tedious. I therefore
+            thought it would be really handy to create a visualization where
+            one can not only easily find relevant information about specific pokemon,
+            but also between the myriad of pokemon out there.
+          </br> </br>
+            Because pokemon is about a game where stats matter, I decided to use
+            the Annotated graph genre. However, the evolutions of pokemon would
+            not have been justified with a graph, therefore the flowchart genre
+            was applied to evolutions. This also reflects the datatype used
+            in each figure. The graph uses numerical data, whereas the tree diagram
+            uses categorical data
+          </br> </br>
+            Initially I wanted to display all 151 pokemon immediately onto the
+            scatterplot so users could easily compare. However, due to server
+            limitations the user has to manually ask for more pokemon. In hindsight
+            I found this feature to be quite fun and inviting to use.
+            As it mimics the Pokemon experience, you have to "catch"
+            (or in this case query) pokemon. It was quite a fun project to work
+            on and also quite fun to use! I would invite everyone to look around
+            and try to find some interesting pokemon trivia.
+
+
+
+          </p>
+          <h4 align = "center">Trivia facts I found exploring the visualization:</h4>
+          <p>
+            Did you know chansey has the highest hp in the whole game? (jigglypuff also has above average hp) pink=hp?
+          </br>
+            Did you know the self destruct pokemon electrode has a weight of 666?
+          </br>
+            Did you know that there are a lot of eevee evolutions? (8!!)
+          </br>
+            Did you know Dragonite has the highest total stats, with each stat being quite balanced?
+          </br>
+            Slowpoke is slow, with only 15 speed, but jugglypuff is not so far away with 20 speed
+          </p>
+
+      </div>
+    </body>
+</html>

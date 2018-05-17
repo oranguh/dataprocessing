@@ -1,14 +1,24 @@
-// Marco Heuvelman  10176306
-//  https://www.pokeapi.co/
+/*
+Marco Heuvelman  10176306
+data source https://www.pokeapi.co/
 
-// Hover over for pokeman name and other info maybe
-// colours for type. Maybe add legend
-// size for height or something
-// dropdown for more pokemon from API
-// legend with filter function
+Creates linked list containing a scatterplot and a tree diagram
 
-// http://bl.ocks.org/curran/f4041cac02f19ee460dfe8b709dc24e7
-// http://bl.ocks.org/d3noob/8324872
+Since the API must be called for each pokemon the user must click a button to
+get additional pokemon. The time for the server to respond varies significantly.
+It is also important to note that the server often times out.
+
+The scatterplot contains adjustable axes, a filter function embedded in the legend,
+option to call more pokemon from the first generation (151 total), a tooltip,
+and automatically adjusts to browser size.
+
+When the user clicks on a pokemon the pokemons respective evolution tree
+is displayed. (see pokeTree.js for more info)
+
+
+Inspiration from:
+http://bl.ocks.org/curran/f4041cac02f19ee460dfe8b709dc24e7
+*/
 
 // dimensions of container
 var width = (window.innerWidth);
@@ -42,12 +52,10 @@ var poketypes =
   ["fire", "poison", "bug", "dark", "dragon", "electric", "fairy", "fighting",
   "flying", "ghost", "grass", "ground", "ice", "normal", "psychic", "rock", "steel",
   "water"];
-
 // API server
 var POKEDEX = 'https://pokeapi.co/api/v2/pokemon/';
 //  e.g. https://pokeapi.co/api/v2/pokemon/1/
 var POKEWIKI = 'http://pokemon.wikia.com/wiki/';
-
 // draws graph on window load
 window.onload = redraw()
 function redraw(){
@@ -99,7 +107,6 @@ function redraw(){
         .attr("font-weight", "bold")
         .attr("fill", "darkgreen")
         .text("Pokemon Evolution");
-
       var svg = d3.select("body").select(".svgContainer")
         .append("svg")
         .attr("class", "scatterPlot")
@@ -269,6 +276,7 @@ function redraw(){
         })
        .attr("width", 10)
        .attr("height", 10)
+       // Click event listener which filters out pokemon of respective type
        .on("click", function(d) {
         d3.select("body").select(".scatterPlot").selectAll("image")
           .transition()
@@ -421,8 +429,8 @@ function clickity(num) {
     TreeFresh()
   }
 }
+// function for button click events which allow user to change axes
 function axickity(num, axis) {
-  // changes the axes and the labels
   if (initialized) {
     let label = ""
     switch(num) {
