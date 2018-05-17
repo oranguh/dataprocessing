@@ -32,7 +32,7 @@ var myPokemonList = []
 var myPokemonIntegerList = []
 // amount of pokeman in generation 1
 var pokemanUpperLimit = 151;
-// initialize the axes metadeta
+// initialize the axes label
 var yAxisValue = 0
 var yAxisLabel = "Speed"
 var xAxisValue = 4
@@ -347,14 +347,14 @@ function redraw(){
         .transition()
         .duration(700)
         .attr("transform",
-              "translate(" + Math.floor((w/2)) + " ," +
-                             (h - 7) + ")")
+              "translate(" + Math.floor((w/2)) + " ," + (h - 7) + ")")
         .text(xAxisLabel);
       legendo.select(".outlineLegend")
         .transition()
         .duration(700)
         .attr("width", 70)
         .attr("height", h - margins.bottom)
+        .attr("x", Math.floor((w - margins.right) + margins.right*(2/8)) - 3)
       legendo.selectAll(".legendblock")
         .transition()
         .duration(700)
