@@ -45,11 +45,12 @@ function getEvolution(pokeURL){
   });
 }
 function drawTree(root){
-  // creates g element
+  // creates g element for treeDiagram
   var canvas = d3.select(".treeDiagram")
     .append("g")
       .attr("class", "treeDrawn");
   var treeLayout = d3.tree();
+  // sets dimensions for layout, which gives every node in root [x,y] coordinates
   treeLayout.size([wTree, hTree - 100]);
   treeLayout(root);
   var nodes = root.descendants()
